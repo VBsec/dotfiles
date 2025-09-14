@@ -54,6 +54,9 @@ local function neovimMappings()
 
 	map("i", "<C-f>", "<Esc>/", { noremap = false })
 	map("i", "jj", "<Esc>", { noremap = false })
+	
+	-- Map leader+jj to quit Neovim
+	map("n", "<leader>jj", "<cmd>qa<CR>", { noremap = true, desc = "Quit Neovim" })
 
 	-- Map a keybinding to toggle word wrap
 	map("n", "<leader>ct", function()
