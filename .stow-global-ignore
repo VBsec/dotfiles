@@ -1,0 +1,94 @@
+# Global stow ignore file - applies to all packages
+# This prevents stow from trying to manage these files/patterns
+
+# Version Control
+\.git
+\.gitignore
+\.gitmodules
+
+# Documentation
+README.*
+readme.*
+LICENSE.*
+license.*
+CHANGELOG.*
+TODO.*
+INSTALL.*
+AUTHORS.*
+CONTRIBUTING.*
+docs/
+documentation/
+
+# Editor/IDE files
+\.vscode
+\.idea
+\*.swp
+\*.swo
+\*~
+\.nvimlog
+\.vim/
+tags
+TAGS
+
+# macOS
+\.DS_Store
+\.AppleDouble
+\.LSOverride
+Icon\r
+\._*
+\.Spotlight-V100
+\.Trashes
+
+# Backup/temp files
+\*.backup
+\*.bak
+\*.orig
+\*.old
+\*.tmp
+\*.temp
+\#*\#
+\.#*
+
+# Build/compiled files
+\*.pyc
+\*.pyo
+__pycache__/
+\*.class
+\*.o
+\*.so
+\*.dll
+\*.exe
+node_modules/
+dist/
+build/
+target/
+
+# Archive files
+\*.tar
+\*.tar\.gz
+\*.tar\.bz2
+\*.tar\.xz
+\*.zip
+\*.rar
+\*.7z
+
+# Logs
+\*.log
+logs/
+
+# Scripts and utilities (often repo-specific)
+install\.sh
+setup\.sh
+bootstrap\.sh
+test\.sh
+Makefile
+
+# Package manager files
+package-lock\.json
+yarn\.lock
+Cargo\.lock
+Gemfile\.lock
+
+# Stow metadata
+\.stow-local-ignore
+\.stowrc

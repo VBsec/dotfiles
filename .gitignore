@@ -1,48 +1,202 @@
-# Compiled Lua sources
-luac.out
+# ============================================================================
+# macOS
+# ============================================================================
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
 
-# luarocks build files
-*.src.rock
-*.zip
-*.tar.gz
+# ============================================================================
+# Editor/IDE
+# ============================================================================
+# VSCode/Cursor
+.vscode/
+*.code-workspace
+.history/
 
-# Object files
-*.o
-*.os
-*.ko
-*.obj
-*.elf
+# Vim/Neovim
+*.swp
+*.swo
+*~
+.netrwhist
+Session.vim
+.nvimlog
+tags
+TAGS
 
-# Precompiled Headers
-*.gch
-*.pch
+# JetBrains
+.idea/
+*.iml
+*.ipr
+*.iws
 
-# Libraries
-*.lib
-*.a
-*.la
-*.lo
-*.def
-*.exp
+# ============================================================================
+# Shell/Terminal
+# ============================================================================
+# Zsh
+.zcompdump*
+.zsh_history
+.zsh_sessions/
+zsh/.zcompdump*
 
-# Shared objects (inc. Windows DLLs)
+# Bash
+.bash_history
+
+# Fish
+fish_history
+fishd.*
+
+# ============================================================================
+# Programming Languages
+# ============================================================================
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv
+pip-log.txt
+.pytest_cache/
+.coverage
+*.egg-info/
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+.yarn-integrity
+
+# Rust
+target/
+**/*.rs.bk
+Cargo.lock
+
+# Go
+*.exe
 *.dll
 *.so
-*.so.*
 *.dylib
-
-# Executables
-*.exe
+*.test
 *.out
-*.app
-*.i*86
-*.x86_64
-*.hex
+vendor/
 
+# ============================================================================
+# Build/Compiled
+# ============================================================================
+*.o
+*.a
+*.obj
+*.elf
+*.lib
+*.ko
+*.gch
+*.pch
+dist/
+build/
+out/
+
+# ============================================================================
+# Logs and Databases
+# ============================================================================
+*.log
+logs/
+*.sql
+*.sqlite
+*.sqlite3
+*.db
+*.mdb
+
+# ============================================================================
+# Backup/Temp
+# ============================================================================
+*.backup
+*.bak
+*.tmp
+*.temp
+*.orig
+*.old
+*~
+\#*\#
+.\#*
+
+# ============================================================================
+# Application Specific
+# ============================================================================
+# Claude
 claude/.claude/projects
 claude/.claude/shell-snapshots
 claude/.claude/statsig
 claude/.claude/todos
-yazi/.config/yazi/flavors/ayu-dark.yazi
+
+# Yazi
+yazi/.config/yazi/flavors/*.yazi
+
+# Zed
 zed/.config/zed/conversations
-zed/.config/zed/prompts/prompts-library-db.0.mdb
+zed/.config/zed/prompts/*.mdb
+
+# Ghostty
+ghostty/.config/ghostty/themes/
+
+# ============================================================================
+# Secrets and Credentials
+# ============================================================================
+*.pem
+*.key
+*.crt
+*.p12
+.env
+.env.*
+!.env.example
+secrets/
+credentials/
+
+# ============================================================================
+# Package Manager Locks (optional - uncomment if you don't want to track)
+# ============================================================================
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
+# Cargo.lock
+# Gemfile.lock
+# composer.lock
+
+# ============================================================================
+# Archives
+# ============================================================================
+*.tar
+*.tar.gz
+*.tar.bz2
+*.tar.xz
+*.zip
+*.rar
+*.7z
+*.dmg
+*.iso
+
+# ============================================================================
+# Misc
+# ============================================================================
+.cache/
+.sass-cache/
+*.pid
+*.seed
+*.pid.lock

@@ -1,0 +1,27 @@
+# Files to ignore when stowing zsh configuration
+# These files stay in the dotfiles/zsh directory but don't get symlinked
+
+# Scripts and tools
+benchmark.sh
+migrate.sh
+test-completions.zsh
+COMPLETION_TEST.md
+
+# Compiled/generated files
+\.zcompdump.*
+\.zcompdump
+
+# Git and docs
+\.git
+\.gitignore
+README.*
+LICENSE
+
+# Backup files
+.*\.backup
+.*\.old
+.*\.orig
+.*\.bak
+
+# macOS
+\.DS_Store
