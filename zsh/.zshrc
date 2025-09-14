@@ -133,6 +133,7 @@ dev-file-widget() {
 zle -N dev-file-widget
 bindkey '\ev' dev-file-widget  # Alt+V
 
+
 # Ctrl+P to jump to dotfiles (optional, remove if you want default behavior)
 dot-widget() {
   local dir
@@ -374,6 +375,169 @@ fh() {
 }
 
 # ============================================================================
+# PRODUCTIVITY GOODIES
+# ============================================================================
+
+# Quick backup of a file
+bak() {
+  cp "$1" "$1.bak.$(date +%Y%m%d_%H%M%S)"
+}
+
+# Extract any archive
+extract() {
+  if [ -f $1 ]; then
+    case $1 in
+      *.tar.bz2)   tar xjf $1     ;;
+      *.tar.gz)    tar xzf $1     ;;
+      *.bz2)       bunzip2 $1     ;;
+      *.rar)       unrar e $1     ;;
+      *.gz)        gunzip $1      ;;
+      *.tar)       tar xf $1      ;;
+      *.tbz2)      tar xjf $1     ;;
+      *.tgz)       tar xzf $1     ;;
+      *.zip)       unzip $1       ;;
+      *.Z)         uncompress $1  ;;
+      *.7z)        7z x $1        ;;
+      *)     echo "'$1' cannot be extracted" ;;
+    esac
+  else
+    echo "'$1' is not a valid file"
+  fi
+}
+
+# Git worktree switcher with fzf
+gw() {
+  local worktree
+  worktree=$(git worktree list | fzf --preview 'git log --oneline -10 {2}' | awk '{print $1}')
+  [[ -n $worktree ]] && cd "$worktree"
+}
+
+# Quick notes
+note() {
+  local notes_dir="$HOME/notes"
+  mkdir -p "$notes_dir"
+  
+  if [[ $# -eq 0 ]]; then
+    # No args: list notes with fzf and open selected
+    local note=$(ls -1 "$notes_dir" | fzf --preview "cat $notes_dir/{}")
+    [[ -n $note ]] && nvim "$notes_dir/$note"
+  else
+    # With args: create/edit note
+    nvim "$notes_dir/$1.md"
+  fi
+}
+
+# Quick TODO management
+todo() {
+  local todo_file="$HOME/.todo.md"
+  
+  case "$1" in
+    add|a)
+      shift
+      echo "- [ ] $*" >> "$todo_file"
+      echo "Added: $*"
+      ;;
+    list|l|"")
+      if [[ -f "$todo_file" ]]; then
+        cat "$todo_file"
+      else
+        echo "No todos yet!"
+      fi
+      ;;
+    edit|e)
+      nvim "$todo_file"
+      ;;
+    done|d)
+      # Mark items as done interactively
+      if [[ -f "$todo_file" ]]; then
+        local item=$(grep "^\- \[ \]" "$todo_file" | fzf)
+        if [[ -n $item ]]; then
+          sed -i "" "s/$(echo "$item" | sed 's/[[\.*^$()+?{|]/\\&/g')/- [x]${item:5}/" "$todo_file"
+          echo "Marked as done!"
+        fi
+      fi
+      ;;
+    *)
+      echo "Usage: todo [add|list|edit|done]"
+      ;;
+  esac
+}
+
+# Quick directory bookmarks
+bookmark() {
+  local bookmarks_file="$HOME/.bookmarks"
+  
+  case "$1" in
+    add|a)
+      echo "$(pwd)|${2:-$(basename $(pwd))}" >> "$bookmarks_file"
+      echo "Bookmarked: $(pwd) as '${2:-$(basename $(pwd))}'"
+      ;;
+    list|l|"")
+      if [[ -f "$bookmarks_file" ]]; then
+        cat "$bookmarks_file" | column -t -s '|'
+      fi
+      ;;
+    go|g)
+      if [[ -f "$bookmarks_file" ]]; then
+        local dir=$(cat "$bookmarks_file" | fzf | cut -d'|' -f1)
+        [[ -n $dir ]] && cd "$dir"
+      fi
+      ;;
+    *)
+      echo "Usage: bookmark [add|list|go]"
+      ;;
+  esac
+}
+alias bm=bookmark
+
+# Better git log
+glog() {
+  git log --graph --pretty=format:'%C(auto)%h%d %s %C(black)%C(bold)%cr %C(auto)%an' "$@"
+}
+
+# Quick Python virtual env
+venv() {
+  if [[ -d .venv ]]; then
+    source .venv/bin/activate
+  elif [[ -d venv ]]; then
+    source venv/bin/activate
+  else
+    python3 -m venv .venv && source .venv/bin/activate
+  fi
+}
+
+# Smarter cd that activates venvs, shows git status
+cd() {
+  builtin cd "$@" || return
+  
+  # Auto-activate Python venv
+  if [[ -d .venv/bin/activate ]] && [[ -z "$VIRTUAL_ENV" ]]; then
+    source .venv/bin/activate
+  fi
+  
+  # Show brief git status if in a git repo
+  if git rev-parse --git-dir &>/dev/null; then
+    local branch=$(git branch --show-current)
+    local changes=$(git status --porcelain | wc -l | xargs)
+    if [[ $changes -gt 0 ]]; then
+      echo "  📦 $branch ($changes uncommitted changes)"
+    fi
+  fi
+  
+}
+
+# Quick ripgrep with preview
+rgp() {
+  rg --color=always --line-number --no-heading --smart-case "${*:-}" |
+    fzf --ansi \
+        --color "hl:-1:underline,hl+:-1:underline:reverse" \
+        --delimiter : \
+        --preview 'bat --color=always {1} --highlight-line {2}' \
+        --preview-window 'up,60%,border-bottom,+{2}+3/3,~3' \
+        --bind 'enter:execute(nvim {1} +{2})'
+}
+
+# ============================================================================
 # ASYNC LOADING - Load in background after shell starts
 # ============================================================================
 # Start loading heavy stuff in background
@@ -390,6 +554,15 @@ fh() {
 # ============================================================================
 # MINIMAL PLUGIN SYSTEM - Replace Oh-My-Zsh
 # ============================================================================
+
+# Tmux aliases
+alias ta='tmux attach -t'
+alias tad='tmux attach -d -t'
+alias ts='tmux new-session -s'
+alias tl='tmux list-sessions'
+alias tksv='tmux kill-server'
+alias tkss='tmux kill-session -t'
+alias tmuxconf='$EDITOR ~/.tmux.conf'
 
 # Git aliases (essential ones only)
 alias g='git'
