@@ -1,0 +1,27 @@
+return {}
+-- return {
+-- 	"folke/edgy.nvim",
+-- 	opts = {
+-- 		left = {
+-- 			{
+-- 				title = "Files",
+-- 				ft = "neo-tree",
+-- 				filter = function(buf)
+-- 					return vim.b[buf].neo_tree_source == "filesystem"
+-- 				end,
+-- 				size = { height = 0.5, width = 40 },
+-- 			},
+-- 			-- {
+-- 			-- 	title = "Open Buffers",
+-- 			-- 	ft = "neo-tree",
+-- 			-- 	filter = function(buf)
+-- 			-- 		return vim.b[buf].neo_tree_source == "buffers"
+-- 			-- 	end,
+-- 			-- 	pinned = true,
+-- 			-- 	open = "Neotree position=top buffers",
+-- 			-- },
+-- 			"neo-tree",
+-- 		},
+-- 		right = {},
+-- 	},
+-- }
