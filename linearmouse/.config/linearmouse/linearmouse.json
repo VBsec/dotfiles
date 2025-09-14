@@ -1,0 +1,137 @@
+{
+  "schemes" : [
+    {
+      "if" : {
+        "device" : {
+          "productID" : "0xc547",
+          "category" : "mouse",
+          "vendorID" : "0x46d",
+          "productName" : "USB Receiver"
+        }
+      },
+      "pointer" : {
+        "speed" : 0.2559,
+        "acceleration" : 0
+      },
+      "scrolling" : {
+        "acceleration" : {
+          "horizontal" : 0.83,
+          "vertical" : 1
+        },
+        "speed" : {
+          "horizontal" : 6.63,
+          "vertical" : 10
+        },
+        "modifiers" : {
+          "horizontal" : {
+            "shift" : {
+              "type" : "preventDefault"
+            }
+          },
+          "vertical" : {
+            "command" : {
+              "type" : "zoom"
+            },
+            "shift" : {
+              "type" : "alterOrientation"
+            }
+          }
+        },
+        "distance" : {
+          "vertical" : "auto"
+        }
+      },
+      "buttons" : {
+        "universalBackForward" : true
+      }
+    },
+    {
+      "if" : {
+        "device" : {
+          "productID" : "0x0",
+          "productName" : "Apple Internal Keyboard \/ Trackpad",
+          "category" : "trackpad",
+          "vendorID" : "0x0"
+        }
+      },
+      "scrolling" : {
+        "reverse" : {
+          "vertical" : true
+        },
+        "acceleration" : {
+          "vertical" : 1
+        },
+        "speed" : {
+          "vertical" : 2.54
+        }
+      }
+    },
+    {
+      "if" : {
+        "device" : {
+          "productID" : "0xc094",
+          "vendorID" : "0x46d",
+          "category" : "mouse",
+          "serialNumber" : "95191E21",
+          "productName" : "PRO X Wireless"
+        }
+      },
+      "pointer" : {
+        "disableAcceleration" : true,
+        "acceleration" : 0.7405
+      },
+      "scrolling" : {
+        "acceleration" : {
+          "vertical" : 1
+        },
+        "distance" : {
+          "vertical" : 3
+        },
+        "speed" : {
+          "vertical" : 0
+        },
+        "modifiers" : {
+          "vertical" : {
+            "shift" : {
+              "type" : "alterOrientation"
+            }
+          }
+        }
+      }
+    },
+    {
+      "if" : {
+        "device" : {
+          "productName" : "Razer DeathAdder V3 Pro",
+          "serialNumber" : "000000000000",
+          "productID" : "0xb7",
+          "vendorID" : "0x1532",
+          "category" : "mouse"
+        }
+      },
+      "pointer" : {
+        "disableAcceleration" : true
+      },
+      "scrolling" : {
+        "acceleration" : {
+          "vertical" : 1.1,
+          "horizontal" : 1
+        },
+        "modifiers" : {
+          "vertical" : {
+            "shift" : {
+              "type" : "alterOrientation"
+            },
+            "command" : {
+              "type" : "zoom"
+            }
+          }
+        },
+        "speed" : {
+          "vertical" : 8
+        }
+      }
+    }
+  ],
+  "$schema" : "https:\/\/schema.linearmouse.app\/0.10.0"
+}
