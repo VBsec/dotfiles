@@ -1,15 +1,19 @@
 {
+  "includeCoAuthoredBy": false,
   "permissions": {
     "allow": [
-      "Bash(infisical*)",
       "Bash(grep:*)",
       "Bash(ls:*)",
       "Bash(find:*)",
       "Bash(rg:*)",
       "Bash(fd:*)",
-      "Bash(cat:/tmp/**)",
-      "Bash(echo:/tmp/**)"
+      "Bash(cat:*)",
+      "Bash(echo:*)"
     ],
-    "deny": []
+    "deny": [
+      "Read(.env)",
+      "Read(.env.*)",
+      "Read(secrets/**)",
+    ]
   }
 }
