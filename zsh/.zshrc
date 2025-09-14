@@ -1,181 +1,348 @@
-# echo "start: $(date +%s.%N)"
+#!/usr/bin/env zsh
+# Optimized .zshrc for fast shell startup
+# Enable profiling: uncomment next line and zprof at end
+# zmodload zsh/zprof
 
-# export PATH="/Library/Frameworks/Python.framework/Versions/3.12/bin:${PATH}"
+# ============================================================================
+# INSTANT - Core Settings (must be fast)
+# ============================================================================
 export LANG=en_US.UTF-8
+export EDITOR=/opt/homebrew/bin/nvim
+
+# Basic PATH setup - do once, early
+typeset -U PATH path  # Unique entries only
+path=(
+  $HOME/.proto/shims
+  $HOME/.proto/bin
+  $HOME/.local/bin
+  $HOME/.deno/bin
+  $HOME/Library/pnpm
+  $HOME/.cargo/bin
+  /opt/homebrew/bin
+  /opt/homebrew/sbin
+  /opt/homebrew/opt/llvm/bin
+  /opt/homebrew/opt/binutils/bin
+  /opt/homebrew/opt/ruby/bin
+  /opt/homebrew/opt/postgresql@16/bin
+  $path
+)
+
+# ============================================================================
+# INSTANT - Fast Aliases (no external commands)
+# ============================================================================
 alias v=nvim
+alias py=python
+alias p=pnpm
+alias lg=lazygit
+alias printpath="echo \$PATH | tr ':' '\n'"
+alias wip="git add -A && git commit -m 'wip' && git push"
+
+# Fast functions
+mkcd() { mkdir -p "$1" && cd "$1"; }
+
+# ============================================================================
+# FAST - Zsh Options & Completion (built-in, fast)
+# ============================================================================
+setopt AUTO_CD              # cd by typing directory name
+setopt AUTO_PUSHD           # Push directories on every cd
+setopt PUSHD_IGNORE_DUPS    # Don't push duplicates
+setopt INTERACTIVE_COMMENTS # Allow comments in interactive shell
+setopt HIST_IGNORE_DUPS     # Don't record duplicate commands
+setopt HIST_IGNORE_SPACE    # Don't record commands starting with space
+setopt SHARE_HISTORY        # Share history between sessions
+setopt EXTENDED_HISTORY     # Record timestamp in history
+
+# History configuration
+HISTSIZE=50000
+SAVEHIST=50000
+HISTFILE=~/.zsh_history
+
+# Vi mode
+bindkey -v
+export KEYTIMEOUT=1
+
+# Add brew completions to FPATH before compinit
+if type brew &>/dev/null; then
+  FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
+fi
+
+# Basic completion (fast, built-in)
+autoload -Uz compinit
+# Only check for new completions once a day
+if [[ ! -f ~/.zcompdump || ~/.zcompdump -nt /usr/share/zsh ]] || 
+   [[ $(find ~/.zcompdump -mtime +1 -print 2>/dev/null) ]]; then
+  compinit
+else
+  compinit -C  # Skip security check for faster startup
+fi
+
+# Completion options
+zstyle ':completion:*' menu select
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'  # Case insensitive
+zstyle ':completion:*' list-colors ''
+zstyle ':completion:*' group-name ''
+zstyle ':completion:*:descriptions' format '%B%d%b'
+
+# ============================================================================
+# DEFERRED - Load heavier aliases after shell starts
+# ============================================================================
+# These use external commands, so defer them
 alias l="eza -l --icons --git -a"
+
+# Tree functions with better ergonomics
 lt() {
-  local level=${1:-2}
-  shift
+  # List tree: Shows files and directories in tree format
+  # Usage: lt [level] [path] [eza-options]
+  # If first arg is a number, use as level; otherwise default to 2
+  local level=2
+  if [[ $1 =~ ^[0-9]+$ ]]; then
+    level=$1
+    shift
+  fi
   eza --tree --level="$level" --long --icons --git --git-ignore "$@"
 }
 
 ld() {
-  local level=${1:-2}
-  shift
-  eza --tree --level="$level" -D git --git-ignore "$@"
+  # Directory tree: Shows only directories
+  # Usage: ld [level] [path] [eza-options]
+  # If first arg is a number, use as level; otherwise default to 2
+  local level=2
+  if [[ $1 =~ ^[0-9]+$ ]]; then
+    level=$1
+    shift
+  fi
+  eza --tree --level="$level" -D --icons --git-ignore "$@"
 }
-alias py=python
-alias cat=bat
-alias p=pnpm
-export EDITOR=/opt/homebrew/bin/nvim
-export ZSH="$HOME/.oh-my-zsh"
-alias printpath="echo $PATH | tr ':' '\n'"
-alias wip="git add -A && git commit -m 'wip' && git push"
-alias lg=lazygit
-mkcd() { mkdir -p "$1" && cd "$1"; }
 
-# https://docs.commonfate.io/granted/recipes/automatically_reassume
-export GRANTED_ENABLE_AUTO_REASSUME=true
-# Uncomment the following line to use case-sensitive completion.
-# CASE_SENSITIVE="true"
+# Additional useful eza shortcuts
+la() {
+  # List all with details
+  eza -la --icons --git --group-directories-first "$@"
+}
 
-# Uncomment the following line to use hyphen-insensitive completion.
-# Case-sensitive completion must be off. _ and - will be interchangeable.
-HYPHEN_INSENSITIVE="true"
+ll() {
+  # List long format
+  eza -l --icons --git --group-directories-first "$@"
+}
 
-# Uncomment one of the following lines to change the auto-update behavior
-zstyle ':omz:update' mode disabled  # disable automatic updates
-# zstyle ':omz:plugins:zsh-nvm' mode auto 
-# zstyle ':omz:update' mode auto      # update automatically without asking
-# zstyle ':omz:update' mode reminder  # just remind me to update when it's time
+lf() {
+  # List files only (no directories)
+  eza -lf --icons --git "$@"
+}
 
-# Uncomment the following line to change how often to auto-update (in days).
-# zstyle ':omz:update' frequency 10
+lt1() { lt 1 "$@"; }  # Quick aliases for common depths
+lt2() { lt 2 "$@"; }
+lt3() { lt 3 "$@"; }
+lt4() { lt 4 "$@"; }
 
-# Uncomment the following line if pasting URLs and other text is messed up.
-# DISABLE_MAGIC_FUNCTIONS="true"
+# Yazi wrapper
+function y() {
+  local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+  yazi "$@" --cwd-file="$tmp"
+  if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+    builtin cd -- "$cwd"
+  fi
+  rm -f -- "$tmp"
+}
 
-# Uncomment the following line to disable colors in ls.
-# DISABLE_LS_COLORS="true"
+# ============================================================================
+# LAZY LOADING - Heavy tools loaded on demand
+# ============================================================================
 
-# Uncomment the following line to disable auto-setting terminal title.
-# DISABLE_AUTO_TITLE="true"
+# Lazy load nvm/node (if you use it)
+# export NVM_DIR="$HOME/.nvm"
+# nvm() {
+#   unset -f nvm
+#   [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+#   nvm "$@"
+# }
 
-# Uncomment the following line to enable command auto-correction.
-# ENABLE_CORRECTION="true"
+# Lazy load gcloud
+gcloud() {
+  unset -f gcloud
+  if [ -f '/Users/vbsec/Development/cloud/google-cloud-sdk/path.zsh.inc' ]; then 
+    . '/Users/vbsec/Development/cloud/google-cloud-sdk/path.zsh.inc'
+  fi
+  if [ -f '/Users/vbsec/Development/cloud/google-cloud-sdk/completion.zsh.inc' ]; then 
+    . '/Users/vbsec/Development/cloud/google-cloud-sdk/completion.zsh.inc'
+  fi
+  gcloud "$@"
+}
 
-# Uncomment the following line to display red dots whilst waiting for completion.
-# You can also set it to another string to have that shown instead of the default red dots.
-# e.g. COMPLETION_WAITING_DOTS="%F{yellow}waiting...%f"
-# Caution: this setting can cause issues with multiline prompts in zsh < 5.7.1 (see #5765)
-COMPLETION_WAITING_DOTS="true"
 
-# Uncomment the following line if you want to disable marking untracked files
-# under VCS as dirty. This makes repository status check for large repositories
-# much, much faster.
-# DISABLE_UNTRACKED_FILES_DIRTY="true"
+# Lazy load docker completions
+docker() {
+  unset -f docker
+  fpath=($HOME/.docker/completions $fpath)
+  autoload -Uz compinit && compinit -C
+  docker "$@"
+}
 
-# Uncomment the following line if you want to change the command execution time
-# stamp shown in the history command output.
-# You can set one of the optional three formats:
-# "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
-# or set a custom format using the strftime function format specifications,
-# see 'man strftime' for details.
-# HIST_STAMPS="mm/dd/yyyy"
+# ============================================================================
+# CRITICAL - Prompt (must load synchronously)
+# ============================================================================
+# Starship prompt - needs to be loaded immediately
+eval "$(starship init zsh)"
 
-# Would you like to use another custom folder than $ZSH/custom?
-# ZSH_CUSTOM=/path/to/new-custom-folder
+# ============================================================================
+# FAST TOOLS - Load synchronously but they're fast
+# ============================================================================
+# Zoxide - fast cd (not replacing the builtin)
+eval "$(zoxide init zsh)"
 
-# Which plugins would you like to load?
-# Standard plugins can be found in $ZSH/plugins/
-# Custom plugins may be added to $ZSH_CUSTOM/plugins/
-# Example format: plugins=(rails git textmate ruby lighthouse)
-# Add wisely, as too many plugins slow down shell startup.
-# echo "pre-plugins: $(date +%s.%N)"
-plugins=(tmux git zsh-autosuggestions aws zsh-syntax-highlighting command-not-found copypath copyfile fzf gh ripgrep 1password docker)
-# export ZSH_TMUX_AUTOSTART=true
-export ZSH_TMUX_DEFAULT_SESSION_NAME="main"
-export FZF_BASE=/opt/homebrew/bin/fzf
-source $ZSH/oh-my-zsh.sh
-
+# FZF configuration - must set before sourcing fzf
+export FZF_DEFAULT_COMMAND="fd --type f --hidden --follow --exclude .git"
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 export FZF_CTRL_T_OPTS="--walker-skip .git,node_modules,cache --preview 'bat --style=numbers --color=always --line-range :501 {}'"
 export FZF_ALT_C_OPTS="--walker-skip .git,node_modules --preview 'tree -C {}'"
 export FZF_CTRL_R_OPTS="
   --bind 'ctrl-y:execute-silent(echo -n {2..} | pbcopy)+abort'
   --color header:italic
   --header 'Press CTRL-Y to copy command into clipboard'"
-export FZF_DEFAULT_COMMAND="fd"
 
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+# FZF tab completion settings
+export FZF_COMPLETION_TRIGGER='**'  # Type ** then TAB to trigger
+export FZF_COMPLETION_OPTS='--border --info=inline'
 
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-# [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+# Source FZF - this loads key bindings and completions
+if [ -f ~/.fzf.zsh ]; then
+  source ~/.fzf.zsh
+elif command -v fzf &>/dev/null; then
+  # Fallback to loading fzf completions directly
+  source <(fzf --zsh)
+fi
 
-export TIMEFMT=$'real\t%E\nuser\t%U\nsys\t%S'
+# Keep the default trigger for FZF file completion
+export FZF_COMPLETION_TRIGGER='**'
 
-# tabtab source for packages
-# uninstall by removing these lines
-[[ -f ~/.config/tabtab/zsh/__tabtab.zsh ]] && . ~/.config/tabtab/zsh/__tabtab.zsh || true
+# For command completions with FZF, we need fzf-tab plugin
+# Install with: git clone https://github.com/Aloxaf/fzf-tab ${ZSH_CUSTOM:-~/.config/zsh}/plugins/fzf-tab
+if [[ -f ~/.config/zsh/plugins/fzf-tab/fzf-tab.plugin.zsh ]]; then
+  source ~/.config/zsh/plugins/fzf-tab/fzf-tab.plugin.zsh
+  # Configure fzf-tab
+  zstyle ':fzf-tab:*' fzf-command fzf
+  # Disable preview window
+  zstyle ':fzf-tab:*' fzf-flags --no-preview
+  # Optional: make it more compact
+  zstyle ':fzf-tab:*' fzf-min-height 15
+  zstyle ':completion:*:git-checkout:*' sort false
+  zstyle ':completion:*:descriptions' format '[%d]'
+fi
 
-unset ZSH_AUTOSUGGEST_USE_ASYNC
 
-# vim mode in terminal
-bindkey -v
-
-# gcloud cli added these
-# The next line updates PATH for the Google Cloud SDK.
-if [ -f '/Users/vbsec/Development/cloud/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/vbsec/Development/cloud/google-cloud-sdk/path.zsh.inc'; fi
-
-# The next line enables shell command completion for gcloud.
-if [ -f '/Users/vbsec/Development/cloud/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/vbsec/Development/cloud/google-cloud-sdk/completion.zsh.inc'; fi
-
-export STM32_PRG_PATH=/Applications/STMicroelectronics/STM32Cube/STM32CubeProgrammer/STM32CubeProgrammer.app/Contents/MacOs/bin
-export PATH="/opt/homebrew/opt/postgresql@16/bin:$PATH"
-
-# pnpm
-export PNPM_HOME="/Users/vbsec/Library/pnpm"
-case ":$PATH:" in
-  *":$PNPM_HOME:"*) ;;
-  *) export PATH="$PNPM_HOME:$PATH" ;;
-esac
-# pnpm end
-#
-# expo local builds:
-export JAVA_HOME=/Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home
-
-# Created by `pipx` on 2024-11-23 07:22:06
-export PATH="$PATH:/Users/vbsec/.local/bin"
-eval "$(register-python-argcomplete pipx)"
-fpath+=~/.zfunc
-autoload -Uz compinit && compinit
-
-eval "$(starship init zsh)"
-eval "$(direnv hook zsh)"
-# eval "$(gh copilot alias -- zsh)"
-eval "$(zoxide init zsh)"
-[ -s "/Users/vbsec/.bun/_bun" ] && source "/Users/vbsec/.bun/_bun"
-. "$HOME/.cargo/env"
-
-. "$HOME/.config/west/comp"
-
-function y() {
-	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
-	yazi "$@" --cwd-file="$tmp"
-	if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
-		builtin cd -- "$cwd"
-	fi
-	rm -f -- "$tmp"
+# Override FZF's default completion generators with faster fd
+_fzf_compgen_path() {
+  fd --hidden --follow --exclude ".git" . "$1"
 }
 
-export PATH="$(brew --prefix)/opt/llvm/bin:$PATH"
-export PATH="/Users/vbsec/.deno/bin:$PATH"
+_fzf_compgen_dir() {
+  fd --type d --hidden --follow --exclude ".git" . "$1"
+}
 
-export PATH="/opt/homebrew/opt/ruby/bin:/opt/homebrew/lib/ruby/gems/3.4.0/bin:$PATH"
+# FZF + zsh integration shortcuts
+# Use fd for finding files/dirs (faster than find)
+export FZF_DEFAULT_OPTS='
+  --height 40%
+  --layout=reverse
+  --border
+  --inline-info
+  --color=dark
+  --color=fg:-1,bg:-1,hl:#5fff87,fg+:-1,bg+:-1,hl+:#ffaf5f
+  --color=info:#af87ff,prompt:#5fff87,pointer:#ff87d7,marker:#ff87d7,spinner:#ff87d7
+  --bind="ctrl-d:preview-page-down,ctrl-u:preview-page-up"
+  --bind="ctrl-y:execute-silent(echo -n {+} | pbcopy)+abort"
+  --bind="ctrl-e:execute(echo {+} | xargs -o nvim)"
+'
+
+# Enhanced FZF functions
+# Interactive cd with preview
+fcd() {
+  local dir
+  dir=$(fd --type d --hidden --follow --exclude .git 2>/dev/null | fzf --preview 'tree -C {} | head -100') && cd "$dir"
+}
+
+# Interactive file open with preview
+fopen() {
+  local file
+  file=$(fzf --preview 'bat --style=numbers --color=always {}') && ${EDITOR:-nvim} "$file"
+}
+
+# Git branch switcher
+fbr() {
+  local branches branch
+  branches=$(git branch -a --color=never | grep -v HEAD) &&
+  branch=$(echo "$branches" | fzf --preview 'git log --oneline --graph --color=always {}' +m) &&
+  git checkout $(echo "$branch" | sed "s/.* //" | sed "s#remotes/[^/]*/##")
+}
+
+# Process killer with preview
+fkill() {
+  local pid
+  pid=$(ps -ef | sed 1d | fzf -m --preview 'echo {}' --preview-window down:3:wrap | awk '{print $2}')
+  if [ "x$pid" != "x" ]; then
+    echo $pid | xargs kill -${1:-9}
+  fi
+}
+
+# Search history with fzf
+fh() {
+  print -z $( ([ -n "$ZSH_NAME" ] && fc -l 1 || history) | fzf +s --tac | sed -E 's/ *[0-9]*\*? *//' | sed -E 's/\\/\\\\/g')
+}
+
+# ============================================================================
+# ASYNC LOADING - Load in background after shell starts
+# ============================================================================
+# Start loading heavy stuff in background
+{
+  # Direnv - can be loaded async
+  eval "$(direnv hook zsh)"
+  
+  # Source other environments
+  [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
+  [ -f "$HOME/.cargo/env" ] && source "$HOME/.cargo/env"
+  [ -f "$HOME/.config/west/comp" ] && source "$HOME/.config/west/comp"
+} &!
+
+# ============================================================================
+# MINIMAL PLUGIN SYSTEM - Replace Oh-My-Zsh
+# ============================================================================
+
+# Git aliases (essential ones only)
+alias g='git'
+alias ga='git add'
+alias gc='git commit'
+alias gco='git checkout'
+alias gd='git diff'
+alias gl='git pull'
+alias gp='git push'
+alias gst='git status'
+
+# Auto-suggestions (lightweight alternative)
+# Only load in interactive shells with ZLE enabled
+if [[ $- == *i* ]] && [[ -f /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]]; then
+  source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+  ZSH_AUTOSUGGEST_STRATEGY=(history completion)
+  ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
+fi
+
+# Syntax highlighting (load last)
+# Only load in interactive shells with ZLE enabled
+if [[ $- == *i* ]] && [[ -f /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]]; then
+  source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+fi
+
+# ============================================================================
+# ENVIRONMENT VARIABLES
+# ============================================================================
+export GRANTED_ENABLE_AUTO_REASSUME=true
+export TIMEFMT=$'real\t%E\nuser\t%U\nsys\t%S'
+export JAVA_HOME=/Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home
+export STM32_PRG_PATH=/Applications/STMicroelectronics/STM32Cube/STM32CubeProgrammer/STM32CubeProgrammer.app/Contents/MacOs/bin
+export STM32CubeMX_PATH=/Applications/STMicroelectronics/STM32CubeMX.app/Contents/Resources
 export PKG_CONFIG_PATH="/opt/homebrew/opt/ruby/lib/pkgconfig"
 
-export STM32CubeMX_PATH=/Applications/STMicroelectronics/STM32CubeMX.app/Contents/Resources
-export PATH="/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.11.3.rel1.macos64_1.1.100.202310310803/tools/bin:$PATH"
+# Proto paths (if needed)
+export PROTO_HOME="$HOME/.proto"
 
-export PATH="/opt/homebrew/opt/binutils/bin:$PATH"
-
-# proto !! shims need to be first in path !!
-export PROTO_HOME="$HOME/.proto";
-export PATH="$PROTO_HOME/tools/node/22.14.0/bin:$PROTO_HOME/tools/node/20.19.1/bin:$PATH";
-export PATH="$PROTO_HOME/shims:$PROTO_HOME/bin:$PATH";
-# echo "end: $(date +%s.%N)"
-# The following lines have been added by Docker Desktop to enable Docker CLI completions.
-fpath=($HOME/.zsh/completions $HOME/.docker/completions $fpath)
-autoload -Uz compinit
-compinit
-# End of Docker CLI completions
+# Enable profiling: uncomment to see what's slow
+# zprof
