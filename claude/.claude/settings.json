@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(infisical*)",
+      "Bash(grep:*)",
+      "Bash(ls:*)",
+      "Bash(find:*)",
+      "Bash(rg:*)",
+      "Bash(fd:*)",
+      "Bash(cat:/tmp/**)",
+      "Bash(echo:/tmp/**)"
+    ],
+    "deny": []
+  }
+}
