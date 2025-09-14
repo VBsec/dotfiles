@@ -40,6 +40,31 @@ alias wip="git add -A && git commit -m 'wip' && git push"
 # Fast functions
 mkcd() { mkdir -p "$1" && cd "$1"; }
 
+# Quick directory jumps
+alias cdd='cd ~/Development'
+alias cdf='cd ~/dotfiles'
+
+# Smart config/dev navigation with fzf
+# Type 'cf' to fuzzy jump to any config dir
+cf() {
+  local dir
+  dir=$(fd --type d --hidden --exclude .git --max-depth 3 . ~/dotfiles 2>/dev/null | fzf --preview 'tree -C -L 1 {}') && cd "$dir"
+}
+
+# Type 'dev' to fuzzy jump to any Development project
+dev() {
+  local dir
+  dir=$({ fd --type d --max-depth 4 . ~/Development 2>/dev/null; \
+          fd --type d --max-depth 2 . ~/AndroidStudioProjects 2>/dev/null; \
+          fd --type d --max-depth 2 . ~/golioth/apps 2>/dev/null; } | \
+          fzf --preview 'tree -C -L 1 {}') && cd "$dir"
+}
+
+# Global directory shortcuts (cd from anywhere)
+hash -d dev=~/Development
+hash -d dot=~/dotfiles
+# Now you can use: cd ~config/nvim, cd ~dev/project, etc.
+
 # ============================================================================
 # FAST - Zsh Options & Completion (built-in, fast)
 # ============================================================================
@@ -60,6 +85,65 @@ HISTFILE=~/.zsh_history
 # Vi mode
 bindkey -v
 export KEYTIMEOUT=1
+
+# Custom key bindings
+# Ctrl+U to jump to Development projects
+dev-widget() {
+  local dir
+  dir=$({ fd --type d --max-depth 4 . ~/Development 2>/dev/null; \
+          fd --type d --max-depth 2 . ~/AndroidStudioProjects 2>/dev/null; \
+          fd --type d --max-depth 2 . ~/golioth/apps 2>/dev/null; } | \
+          fzf --preview 'tree -C -L 1 {}')
+  if [[ -n $dir ]]; then
+    cd "$dir"
+    zle reset-prompt
+  fi
+}
+zle -N dev-widget
+bindkey '^U' dev-widget
+
+# Ctrl+V to jump to Development projects and open in vim
+dev-vim-widget() {
+  local dir
+  dir=$({ fd --type d --max-depth 4 . ~/Development 2>/dev/null; \
+          fd --type d --max-depth 2 . ~/AndroidStudioProjects 2>/dev/null; \
+          fd --type d --max-depth 2 . ~/golioth/apps 2>/dev/null; } | \
+          fzf --preview 'tree -C -L 1 {}')
+  if [[ -n $dir ]]; then
+    cd "$dir"
+    BUFFER="nvim ."
+    zle accept-line
+  fi
+}
+zle -N dev-vim-widget
+bindkey '^V' dev-vim-widget
+
+# Alt+V to search and open files in Development projects
+dev-file-widget() {
+  local file
+  file=$({ fd --type f --max-depth 5 . ~/Development 2>/dev/null; \
+           fd --type f --max-depth 3 . ~/AndroidStudioProjects 2>/dev/null; \
+           fd --type f --max-depth 3 . ~/golioth/apps 2>/dev/null; } | \
+           fzf --preview 'bat --style=numbers --color=always --line-range :500 {}')
+  if [[ -n $file ]]; then
+    BUFFER="nvim $file"
+    zle accept-line
+  fi
+}
+zle -N dev-file-widget
+bindkey '\ev' dev-file-widget  # Alt+V
+
+# Ctrl+P to jump to dotfiles (optional, remove if you want default behavior)
+dot-widget() {
+  local dir
+  dir=$(fd --type d --hidden --exclude .git --max-depth 3 . ~/dotfiles 2>/dev/null | fzf --preview 'tree -C -L 1 {}')
+  if [[ -n $dir ]]; then
+    cd "$dir"
+    zle reset-prompt
+  fi
+}
+zle -N dot-widget
+bindkey '^P' dot-widget
 
 # Add brew completions to FPATH before compinit
 if type brew &>/dev/null; then
