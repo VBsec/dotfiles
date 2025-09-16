@@ -10,11 +10,12 @@
   "features": {
     "edit_prediction_provider": "zed"
   },
-  "agent": {
+  "assistant": {
     "default_model": {
       "provider": "zed.dev",
       "model": "claude-3-7-sonnet-latest"
     },
+    "version": "2"
   },
   "vim_mode": true,
   "relative_line_numbers": true,
@@ -24,7 +25,7 @@
   "theme": {
     "mode": "system",
     "light": "Ayu Light",
-    "dark": "Ayu Dark"
+    "dark": "Catppuccin Mocha"
   },
   "terminal": {
     "copy_on_select": true,
