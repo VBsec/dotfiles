@@ -12,8 +12,8 @@ export EDITOR=/opt/homebrew/bin/nvim
 # Basic PATH setup - do once, early
 typeset -U PATH path  # Unique entries only
 path=(
-  $HOME/.proto/shims
-  $HOME/.proto/bin
+  # $HOME/.proto/shims
+  # $HOME/.proto/bin
   $HOME/.local/bin
   $HOME/.deno/bin
   $HOME/Library/pnpm
@@ -274,6 +274,11 @@ eval "$(starship init zsh)"
 # ============================================================================
 # Zoxide - fast cd (not replacing the builtin)
 eval "$(zoxide init zsh)"
+
+# Ngrok autocomplete
+if command -v ngrok &>/dev/null; then
+  eval "$(ngrok completion)"
+fi
 
 # FZF configuration - must set before sourcing fzf
 export FZF_DEFAULT_COMMAND="fd --type f --hidden --follow --exclude .git"
@@ -543,7 +548,7 @@ rgp() {
 # Start loading heavy stuff in background
 {
   # Direnv - can be loaded async
-  eval "$(direnv hook zsh)"
+  # eval "$(direnv hook zsh)"
   
   # Source other environments
   [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
@@ -599,7 +604,8 @@ export STM32CubeMX_PATH=/Applications/STMicroelectronics/STM32CubeMX.app/Content
 export PKG_CONFIG_PATH="/opt/homebrew/opt/ruby/lib/pkgconfig"
 
 # Proto paths (if needed)
-export PROTO_HOME="$HOME/.proto"
+# export PROTO_HOME="$HOME/.proto"
+  eval "$(~/.local/bin/mise activate zsh)"
 
 # Enable profiling: uncomment to see what's slow
 # zprof
