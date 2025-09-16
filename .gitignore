@@ -200,3 +200,4 @@ credentials/
 *.pid
 *.seed
 *.pid.lock
+claude/.claude/.update.lock
