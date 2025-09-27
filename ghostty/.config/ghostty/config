@@ -9,9 +9,9 @@ window-padding-x = 5
 window-padding-y = 5
 # macos-option-as-alt = left
 
-# zellij tab switching
-keybind = unconsumed:ctrl+tab=ignore
-keybind = unconsumed:ctrl+shift+tab=ignore
+# tmux tab switching
+# keybind = unconsumed:ctrl+tab=ignore
+# keybind = unconsumed:ctrl+shift+tab=ignore
 
 # keybind = ctrl+k=goto_split:up
 # keybind = ctrl+j=goto_split:down
@@ -22,13 +22,13 @@ keybind = super+right_bracket=goto_split:next
 
 keybind = super+ctrl+n=equalize_splits
 
-keybind = super+ctrl+k=resize_split:up,15
-keybind = super+ctrl+j=resize_split:down,15
-keybind = super+ctrl+l=resize_split:right,15
-keybind = super+ctrl+h=resize_split:left,15
+# keybind = super+ctrl+k=resize_split:up,15
+# keybind = super+ctrl+j=resize_split:down,15
+# keybind = super+ctrl+l=resize_split:right,15
+# keybind = super+ctrl+h=resize_split:left,15
 
-keybind = super+j=new_split:down
-keybind = super+l=new_split:right
+# keybind = super+j=new_split:down
+# keybind = super+l=new_split:right
 keybind = super+w=close_surface
 
 keybind = super+up=scroll_to_top
