@@ -511,25 +511,6 @@ venv() {
   fi
 }
 
-# Smarter cd that activates venvs, shows git status
-cd() {
-  builtin cd "$@" || return
-  
-  # Auto-activate Python venv
-  if [[ -d .venv/bin/activate ]] && [[ -z "$VIRTUAL_ENV" ]]; then
-    source .venv/bin/activate
-  fi
-  
-  # Show brief git status if in a git repo
-  if git rev-parse --git-dir &>/dev/null; then
-    local branch=$(git branch --show-current)
-    local changes=$(git status --porcelain | wc -l | xargs)
-    if [[ $changes -gt 0 ]]; then
-      echo "  📦 $branch ($changes uncommitted changes)"
-    fi
-  fi
-  
-}
 
 # Quick ripgrep with preview
 rgp() {
@@ -541,6 +522,8 @@ rgp() {
         --preview-window 'up,60%,border-bottom,+{2}+3/3,~3' \
         --bind 'enter:execute(nvim {1} +{2})'
 }
+
+
 
 # ============================================================================
 # ASYNC LOADING - Load in background after shell starts
