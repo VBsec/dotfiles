@@ -1,10 +1,19 @@
 [tools]
 act = "latest"
 bun = "latest"
+go = "latest"
 node = "24"
 "npm:@anthropic-ai/claude-code" = "latest"
+"npm:@biomejs/biome" = "latest"
+"npm:@moonrepo/cli" = "latest"
+"npm:@openai/codex" = "latest"
+"npm:firecrawl-mcp" = "latest"
+"npm:turbo" = "latest"
 pnpm = "latest"
 python = "latest"
 task = "latest"
 usage = "latest"
 uv = "latest"
+
+[settings]
+idiomatic_version_file_enable_tools = ["python"]
