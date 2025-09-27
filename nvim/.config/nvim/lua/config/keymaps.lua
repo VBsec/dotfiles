@@ -54,7 +54,7 @@ local function neovimMappings()
 
 	map("i", "<C-f>", "<Esc>/", { noremap = false })
 	map("i", "jj", "<Esc>", { noremap = false })
-	
+
 	-- Map leader+jj to quit Neovim
 	map("n", "<leader>jj", "<cmd>qa<CR>", { noremap = true, desc = "Quit Neovim" })
 
@@ -71,20 +71,20 @@ local function neovimMappings()
 		{ noremap = true, silent = true, desc = "Symbols Outline(Aerial)" }
 	)
 	map("n", "<leader>ch", "<cmd>Ouroboros<CR>", { noremap = false, desc = "Switch header/source" })
-	
+
 	-- Copy file paths to clipboard (yank paths)
 	map("n", "<leader>yP", function()
 		local path = vim.fn.expand("%:p")
 		vim.fn.setreg("+", path)
 		print("Copied: " .. path)
 	end, { desc = "Yank absolute path" })
-	
+
 	map("n", "<leader>yp", function()
 		local path = vim.fn.expand("%:.")
 		vim.fn.setreg("+", path)
 		print("Copied: " .. path)
 	end, { desc = "Yank relative path" })
-	
+
 	map("n", "<leader>yf", function()
 		local path = vim.fn.expand("%:t")
 		vim.fn.setreg("+", path)
@@ -214,20 +214,17 @@ local function textEditingMappings()
 	map("n", "g,", "A,<Esc>", { desc = "Add comma at end of line" })
 	map("n", "g.", "A.<Esc>", { desc = "Add period at end of line" })
 	map("n", "g:", "A:<Esc>", { desc = "Add colon at end of line" })
-	
+
 	-- Quick brackets/quotes at end of line
 	map("n", "g)", "A)<Esc>", { desc = "Add ) at end of line" })
 	map("n", "g]", "A]<Esc>", { desc = "Add ] at end of line" })
 	map("n", "g}", "A}<Esc>", { desc = "Add } at end of line" })
-	
+
 	-- Insert mode shortcuts using Alt key
-	map("i", "<M-;>", "<Esc>A;<Esc>", { desc = "Jump to end, add semicolon, exit insert" })
-	map("i", "<M-,>", "<Esc>A,<Esc>", { desc = "Jump to end, add comma, exit insert" })
-	
-	-- Alternative with jk prefix
-	map("i", "jk;", "<Esc>A;<Esc>", { desc = "Jump to end, add semicolon" })
-	map("i", "jk,", "<Esc>A,<Esc>", { desc = "Jump to end, add comma" })
-	
+	map("i", "<M-;>", "<Esc>A;i", { desc = "Jump to end, add semicolon, exit insert" })
+	map("i", "<M-,>", "<Esc>A,i", { desc = "Jump to end, add comma, exit insert" })
+	map("i", "<M-:>", "<Esc>A:i", { desc = "Jump to end, add comma, exit insert" })
+
 	-- Insert mode navigation
 	map("i", "<M-a>", "<C-o>^", { desc = "Jump to start of line in insert mode" })
 	map("i", "<M-e>", "<C-o>$", { desc = "Jump to end of line in insert mode" })
