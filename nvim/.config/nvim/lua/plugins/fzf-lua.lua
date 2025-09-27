@@ -2,6 +2,15 @@ return {
   "ibhagwan/fzf-lua",
   opts = function(_, opts)
     local actions = require("fzf-lua.actions")
+
+    -- Configure LazyVim root detection to prioritize monorepo markers
+    -- Put monorepo markers first so they are found before LSP roots (which might detect package.json)
+    vim.g.root_spec = {
+      { "pnpm-workspace.yaml", "lerna.json", "nx.json", "rush.json", "yarn.workspaces" },  -- Monorepo markers
+      { ".git" },  -- Git root
+      "lsp",       -- LSP root (might detect package.json)
+      "cwd"        -- Current working directory
+    }
     
     -- Merge with existing opts
     return vim.tbl_deep_extend("force", opts or {}, {
