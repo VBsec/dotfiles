@@ -10,15 +10,9 @@
   "features": {
     "edit_prediction_provider": "zed"
   },
-  "agent": {
-    "default_model": {
-      "provider": "zed.dev",
-      "model": "claude-3-7-sonnet-latest"
-    },
-  },
   "vim_mode": true,
   "relative_line_numbers": true,
-  "ui_font_size": 14,
+  "ui_font_size": 16,
   // "buffer_font_family": "Geist Mono",
   "buffer_font_size": 14,
   "theme": {
@@ -26,10 +20,22 @@
     "light": "Ayu Light",
     "dark": "Ayu Dark"
   },
+  "format_on_save": "on",
   "terminal": {
     "copy_on_select": true,
     "font_size": 16,
     "font_family": "Agave Nerd Font Mono",
     "line_height": "comfortable"
+  },
+  "active_pane_modifiers": {
+    // Inset border size of the active pane, in pixels.
+    "border_size": 0.0,
+    // Opacity of the inactive panes. 0 means transparent, 1 means opaque.
+    "inactive_opacity": 0.7
+  },
+  "indent_guides": {
+    "enabled": true,
+    "coloring": "indent_aware",
+    "background_coloring": "disabled"
   }
 }
