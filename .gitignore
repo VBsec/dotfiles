@@ -203,3 +203,4 @@ credentials/
 claude/.claude/.update.lock
 claude/.claude/ide/23852.lock
 yabai/.config/yabai/yabairc.save
+claude/.claude/history.jsonl
