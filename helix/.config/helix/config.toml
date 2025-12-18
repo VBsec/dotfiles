@@ -1,0 +1,14 @@
+theme = "ayu_dark"
+
+[editor]
+line-number = "relative"
+cursorline = true
+end-of-line-diagnostics = "hint"
+clipboard-provider = "pasteboard"
+
+
+[editor.inline-diagnostics]
+cursor-line = "warning"
+
+[editor.file-picker]
+hidden = false

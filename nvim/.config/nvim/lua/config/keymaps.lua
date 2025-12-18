@@ -100,6 +100,10 @@ local function neovimMappings()
 end
 
 local function vscodeMappings()
+  map("i", "tab", function()
+    callVSCodeFunction("editor.action.inlineSuggest.commit")
+  end, { noremap = true, silent = true, desc = "Accept next suggestion" })
+
   map({ "n", "x", "i" }, "<D-d>", function()
     require("vscode-multi-cursor").addSelectionToNextFindMatch()
   end)

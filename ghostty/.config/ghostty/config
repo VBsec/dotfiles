@@ -1,5 +1,5 @@
 theme = dark:ayu_dark,light:ayu_light
-background-opacity = 0.92
+# background-opacity = 0.92
 unfocused-split-opacity = 0.95
 macos-titlebar-style = hidden
 # font-family = "MesloLGS Nerd Font Mono"
@@ -38,7 +38,7 @@ keybind = super+page_down=scroll_page_down
 
 # keybind = global:=toggle_quick_terminal
 
-# custom-shader = shaders/sparks-from-fire.glsl
+# custom-shader = shaders/just-snow.glsl
 # custom-shader = shaders-fearless/static.glsl
 
 keybind = shift+enter=text:\n

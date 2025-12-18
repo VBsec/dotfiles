@@ -172,7 +172,7 @@ zstyle ':completion:*:descriptions' format '%B%d%b'
 # DEFERRED - Load heavier aliases after shell starts
 # ============================================================================
 # These use external commands, so defer them
-alias l="eza -l --icons --git -a"
+alias l="eza -l --icons --git -a --group-directories-first"
 
 # Tree functions with better ergonomics
 lt() {

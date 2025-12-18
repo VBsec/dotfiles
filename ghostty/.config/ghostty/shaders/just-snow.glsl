@@ -10,8 +10,8 @@
 #ifdef LIGHT_SNOW
 	#define LAYERS 50
 	#define DEPTH .5
-	#define WIDTH .3
-	#define SPEED .6
+	#define WIDTH .2
+	#define SPEED .3
 #else // BLIZZARD
 	#define LAYERS 200
 	#define DEPTH .1
@@ -27,9 +27,10 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 	vec3 acc = vec3(0.0);
 	float dof = 5.0 * sin(iTime * 0.1);
 	for (int i = 0; i < LAYERS; i++) {
-		float fi = float(i);
+		float fi = float(i) + 3.0;
 		vec2 q =-uv*(1.0 + fi * DEPTH);
-		q += vec2(q.y * (WIDTH * mod(fi * 7.238917, 1.0) - WIDTH * 0.5), -SPEED * iTime / (1.0 + fi * DEPTH * 0.03));
+		float sway = sin(iTime * 1.0 + fi * 1.5) * 0.1 + sin(iTime * 1.8 + fi * 2.3) * 0.06;
+		q += vec2(q.y * (WIDTH * mod(fi * 7.238917, 1.0) - WIDTH * 0.5) + sway, SPEED * iTime / (1.0 + fi * DEPTH * 0.03));
 		vec3 n = vec3(floor(q), 31.189 + fi);
 		vec3 m = floor(n) * 0.00001 + fract(n);
 		vec3 mp = (31415.9 + m) / fract(p * m);

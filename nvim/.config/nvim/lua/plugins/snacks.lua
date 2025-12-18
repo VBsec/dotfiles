@@ -3,9 +3,14 @@ return {
   ---@type snacks.Config
   opts = {
     image = {},
-    animate = {},
+    scroll = {
+      enabled = false,
+    },
     explorer = {
       replace_netrw = false,
+    },
+    picker = {
+      layout = "vertical",
     },
   },
   keys = {
@@ -21,6 +26,16 @@ return {
         })
       end,
       desc = "Find env files",
+    },
+    {
+      "<leader>se",
+      function()
+        Snacks.picker.grep({
+          title = "Grep Code Files",
+          glob = { "*.ts", "*.tsx", "*.js", "*.go", "*.rs", "*.py", "*.c", "*.h" },
+        })
+      end,
+      desc = "Grep code files",
     },
   },
 }

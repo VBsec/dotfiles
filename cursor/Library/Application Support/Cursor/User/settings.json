@@ -1,221 +1,223 @@
 {
-  "explorer.confirmDelete": false,
-  "C_Cpp.clang_format_fallbackStyle": "Google",
-  "[json]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "git.confirmSync": false,
-  "vsicons.dontShowNewVersionMessage": true,
-  "redhat.telemetry.enabled": true,
-  "explorer.confirmDragAndDrop": false,
-  "git.enableSmartCommit": true,
-  "[javascript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "security.workspace.trust.untrustedFiles": "open",
-  "workbench.colorTheme": "Ayu Dark Bordered",
-  "editor.inlineSuggest.enabled": true,
-  "[typescriptreact]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "typescript.updateImportsOnFileMove.enabled": "always",
-  "[python]": {
-    "editor.defaultFormatter": "charliermarsh.ruff",
-    "editor.codeActionsOnSave": {
-      "source.organizeImports": "always"
-    }
-  },
-  "[jsonc]": {
-    "editor.defaultFormatter": "vscode.json-language-features"
-  },
-  "files.eol": "\n",
-  "prettier.bracketSameLine": true,
-  "[javascriptreact]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "arduino.useArduinoCli": true,
-  "editor.minimap.enabled": false,
-  "python.diagnostics.sourceMapsEnabled": true,
-  "python.defaultInterpreterPath": "/Library/Frameworks/Python.framework/Versions/3.12/bin/python3",
-  "editor.codeActionsOnSave": [
-    "source.organizeImports",
-    "source.fixAll.eslint"
-  ],
-  "[scss]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "javascript.updateImportsOnFileMove.enabled": "always",
-  "eslint.codeActionsOnSave.rules": null,
-  "[html]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "workbench.editorAssociations": {
-    "*.elf": "default"
-  },
-  "[makefile]": {
-    "editor.insertSpaces": false
-  },
-  "git.openRepositoryInParentFolders": "always",
-  "files.associations": {
-    "*.makefile": "makefile"
-  },
-  "workbench.iconTheme": "vscode-icons",
-  "editor.linkedEditing": true,
-  "terminal.integrated.enableMultiLinePasteWarning": "auto",
-  "vscode-serial-monitor.lineEnding": "\n",
-  "[shellscript]": {
-    "editor.defaultFormatter": "foxundermoon.shell-format"
-  },
-  "explorer.confirmPasteNative": false,
-  "editor.accessibilitySupport": "off",
-  "[c]": {
-    "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd"
-  },
-  "terminal.integrated.inheritEnv": false,
-  "editor.lineNumbers": "relative",
-  "search.showLineNumbers": true,
-  "python.terminal.executeInFileDir": true,
-  "files.watcherInclude": [
-    "Src/cfg.h"
-  ],
-  "vscode-serial-monitor.timestampSeparator": ": ",
-  "terminal.integrated.copyOnSelection": true,
-  "[dotenv]": {
-    "editor.defaultFormatter": "foxundermoon.shell-format"
-  },
-  "[ignore]": {
-    "editor.defaultFormatter": "foxundermoon.shell-format"
-  },
-  "[cpp]": {
-    "editor.defaultFormatter": "ms-vscode.cpptools"
-  },
-  "nrf-connect.enableTelemetry": true,
-  "go.toolsManagement.autoUpdate": true,
-  "editor.cursorBlinking": "phase",
-  "editor.smoothScrolling": true,
-  "vscode-neovim.neovimExecutablePaths.darwin": "/opt/homebrew/bin/nvim",
-  "vscode-neovim.neovimInitVimPaths.darwin": "$HOME/.config/nvim/init.lua",
-  "vscode-neovim.compositeKeys": {
-    "jj": {
-      "command": "vscode-neovim.escape"
-    }
-  },
-  "vscode-neovim.ctrlKeysForInsertMode": [
-    "a",
-    "c",
-    "d",
-    "h",
-    "j",
-    "o",
-    "r",
-    "t",
-    "u",
-    "w",
-    "l"
-  ],
-  "nvim-ui.nvimColorNormal": "#ffc600",
-  "nvim-ui.nvimColorInsert": "#D32F2F",
-  "nvim-ui.nvimColorVisual": "#673AB7",
-  "nvim-ui.nvimColorReplace": "#000",
-  "nvim-ui.nvimColorCustomizationKeys": [
-    "tab.activeBorder",
-    "editorCursor.foreground"
-  ],
-  "editor.scrollbar.vertical": "auto",
-  "window.titleBarStyle": "custom",
-  "editor.scrollbar.horizontal": "auto",
-  "editor.fontFamily": "Geist Mono",
-  "scm.inputFontFamily": "Geist Mono",
-  "chat.editor.fontFamily": "Geist Mono",
-  "debug.console.fontFamily": "Geist Mono",
-  "editor.codeLensFontFamily": "Geist Mono",
-  "notebook.output.fontFamily": "Geist Mono",
-  "markdown.preview.fontFamily": "Geist Mono",
-  "editor.inlayHints.fontFamily": "Geist Mono",
-  "terminal.integrated.fontFamily": "\"Agave Nerd Font\", monospace",
-  "terminal.integrated.fontSize": 16,
-  "breadcrumbs.filePath": "off",
-  "breadcrumbs.enabled": false,
-  "files.trimTrailingWhitespace": true,
-  "[markdown]": {
-    "files.trimTrailingWhitespace": false,
-    "editor.defaultFormatter": "yzhang.markdown-all-in-one"
-  },
-  "editor.bracketPairColorization.enabled": true,
-  "editor.guides.bracketPairs": true,
-  "editor.inlineSuggest.fontFamily": "Geist Mono",
-  "workbench.colorCustomizations": {
-    "tab.activeBorder": "#ffc600",
-    "editorCursor.foreground": "#ffc600"
-  },
-  "kconfig.python": "/Library/Frameworks/Python.framework/Versions/3.12/bin/python3",
-  "dart.flutterSdkPath": "/Users/vbsec/Development/tools/flutter",
-  "editor.fontSize": 14,
-  "cursor.cpp.disabledLanguages": [
-    "plaintext",
-    "scminput"
-  ],
-  "cursor.cpp.enablePartialAccepts": true,
-  "dependi.vulnerability.ghsa.enabled": true,
-  "gitlens.launchpad.indicator.enabled": false,
-  "window.commandCenter": false,
-  "git.autofetch": true,
-  "deno.codeLens.references": true,
-  "deno.codeLens.test": true,
-  "deno.codeLens.implementations": true,
-  "python.pythonPath": "",
-  "python.analysis.autoImportCompletions": true,
-  "python.analysis.typeCheckingMode": "basic",
-  "python.terminal.activateEnvironment": false,
-  "cmake.showOptionsMovedNotification": false,
-  "periscope.rgGlobExcludes": [
-    "**/node_modules/**"
-  ],
-  "cmake.pinnedCommands": [
-    "workbench.action.tasks.configureTaskRunner",
-    "workbench.action.tasks.runTask"
-  ],
-  "STM32VSCodeExtension.projectCreator.executablePath": "/Applications/STMicroelectronics/STM32CubeMX.app/Contents/Resources/STM32CubeMX",
-  "STM32VSCodeExtension.cubeCLT.path": "/opt/ST/STM32CubeCLT_1.17.0",
-  "editor.formatOnSave": true,
-  "editor.fontLigatures": true,
-  "errorLens.enabled": true,
-  "rust-analyzer.testExplorer": true,
-  "[dockerfile]": {
-    "editor.defaultFormatter": "ms-azuretools.vscode-docker"
-  },
-  "terminal.integrated.allowedLinkSchemes": [
-    "file",
-    "http",
-    "https",
-    "mailto",
-    "vscode",
-    "vscode-insiders",
-    "docker-desktop"
-  ],
-  "githubPullRequests.createOnPublishBranch": "never",
-  "rust-analyzer.check.features": "all",
-  "[yaml]": {
-    "editor.defaultFormatter": "redhat.vscode-yaml"
-  },
-  "git.fetchOnPull": true,
-  "python.analysis.autoFormatStrings": true,
-  "python.analysis.inlayHints.callArgumentNames": "partial",
-  "python.analysis.inlayHints.functionReturnTypes": true,
-  "python.analysis.inlayHints.pytestParameters": true,
-  "python.analysis.inlayHints.variableTypes": true,
-  "gitlens.ai.model": "openai:gpt-4o",
-  "errorLens.followCursorMore": 3,
-  "cursor.composer.shouldAllowCustomModes": true,
-  "find-it-faster.general.useTerminalInEditor": true,
-  "typescript.tsserver.log": "off",
-  "workbench.editor.limit.enabled": true,
-  "workbench.editor.limit.value": 6,
-  "[typescript]": {
-    "editor.defaultFormatter": "biomejs.biome"
-  },
-  "C_Cpp.intelliSenseEngine": "disabled",
-  "extensions.experimental.affinity": {
-    "asvetliakov.vscode-neovim": 1
-  }
+	"explorer.confirmDelete": false,
+	"C_Cpp.clang_format_fallbackStyle": "Google",
+	"[json]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"git.confirmSync": false,
+	"vsicons.dontShowNewVersionMessage": true,
+	"redhat.telemetry.enabled": true,
+	"explorer.confirmDragAndDrop": false,
+	"git.enableSmartCommit": true,
+	"[javascript]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"security.workspace.trust.untrustedFiles": "open",
+	"workbench.colorTheme": "Ayu Dark Bordered",
+	"editor.inlineSuggest.enabled": true,
+	"[typescriptreact]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"typescript.updateImportsOnFileMove.enabled": "always",
+	"[python]": {
+		"editor.defaultFormatter": "charliermarsh.ruff",
+		"editor.codeActionsOnSave": {
+			"source.organizeImports": "always"
+		}
+	},
+	"[jsonc]": {
+		"editor.defaultFormatter": "vscode.json-language-features"
+	},
+	"files.eol": "\n",
+	"prettier.bracketSameLine": true,
+	"[javascriptreact]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"arduino.useArduinoCli": true,
+	"editor.minimap.enabled": false,
+	"python.diagnostics.sourceMapsEnabled": true,
+	"python.defaultInterpreterPath": "/Library/Frameworks/Python.framework/Versions/3.12/bin/python3",
+	"editor.codeActionsOnSave": [
+		"source.organizeImports",
+		"source.fixAll.eslint"
+	],
+	"[scss]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"javascript.updateImportsOnFileMove.enabled": "always",
+	"eslint.codeActionsOnSave.rules": null,
+	"[html]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"workbench.editorAssociations": {
+		"*.elf": "default"
+	},
+	"[makefile]": {
+		"editor.insertSpaces": false
+	},
+	"git.openRepositoryInParentFolders": "always",
+	"files.associations": {
+		"*.makefile": "makefile"
+	},
+	"workbench.iconTheme": "vscode-icons",
+	"editor.linkedEditing": true,
+	"terminal.integrated.enableMultiLinePasteWarning": "auto",
+	"vscode-serial-monitor.lineEnding": "\n",
+	"[shellscript]": {
+		"editor.defaultFormatter": "foxundermoon.shell-format"
+	},
+	"explorer.confirmPasteNative": false,
+	"editor.accessibilitySupport": "off",
+	"[c]": {
+		"editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd"
+	},
+	"terminal.integrated.inheritEnv": false,
+	"editor.lineNumbers": "relative",
+	"search.showLineNumbers": true,
+	"python.terminal.executeInFileDir": true,
+	"files.watcherInclude": ["Src/cfg.h"],
+	"vscode-serial-monitor.timestampSeparator": ": ",
+	"terminal.integrated.copyOnSelection": true,
+	"[dotenv]": {
+		"editor.defaultFormatter": "foxundermoon.shell-format"
+	},
+	"[ignore]": {
+		"editor.defaultFormatter": "foxundermoon.shell-format"
+	},
+	"[cpp]": {
+		"editor.defaultFormatter": "ms-vscode.cpptools"
+	},
+	"nrf-connect.enableTelemetry": true,
+	"go.toolsManagement.autoUpdate": true,
+	"editor.cursorBlinking": "phase",
+	"editor.smoothScrolling": true,
+	"vscode-neovim.neovimExecutablePaths.darwin": "/opt/homebrew/bin/nvim",
+	"vscode-neovim.neovimInitVimPaths.darwin": "$HOME/.config/nvim/init.lua",
+	"vscode-neovim.compositeKeys": {
+		"jj": {
+			"command": "vscode-neovim.escape"
+		}
+	},
+	"vscode-neovim.ctrlKeysForInsertMode": [
+		"a",
+		"c",
+		"d",
+		"h",
+		"j",
+		"o",
+		"r",
+		"t",
+		"u",
+		"w",
+		"l"
+	],
+	"nvim-ui.nvimColorNormal": "#ffc600",
+	"nvim-ui.nvimColorInsert": "#D32F2F",
+	"nvim-ui.nvimColorVisual": "#673AB7",
+	"nvim-ui.nvimColorReplace": "#000",
+	"nvim-ui.nvimColorCustomizationKeys": [
+		"tab.activeBorder",
+		"editorCursor.foreground"
+	],
+	"editor.scrollbar.vertical": "auto",
+	"window.titleBarStyle": "custom",
+	"editor.scrollbar.horizontal": "auto",
+	"editor.fontFamily": "Geist Mono",
+	"scm.inputFontFamily": "Geist Mono",
+	"chat.editor.fontFamily": "Geist Mono",
+	"debug.console.fontFamily": "Geist Mono",
+	"editor.codeLensFontFamily": "Geist Mono",
+	"notebook.output.fontFamily": "Geist Mono",
+	"markdown.preview.fontFamily": "Geist Mono",
+	"editor.inlayHints.fontFamily": "Geist Mono",
+	"terminal.integrated.fontFamily": "\"Agave Nerd Font\", monospace",
+	"terminal.integrated.fontSize": 16,
+	"breadcrumbs.filePath": "off",
+	"breadcrumbs.enabled": false,
+	"files.trimTrailingWhitespace": true,
+	"[markdown]": {
+		"files.trimTrailingWhitespace": false,
+		"editor.defaultFormatter": "yzhang.markdown-all-in-one"
+	},
+	"editor.bracketPairColorization.enabled": true,
+	"editor.guides.bracketPairs": true,
+	"editor.inlineSuggest.fontFamily": "Geist Mono",
+	"workbench.colorCustomizations": {
+		"tab.activeBorder": "#ffc600",
+		"editorCursor.foreground": "#ffc600"
+	},
+	"kconfig.python": "/Library/Frameworks/Python.framework/Versions/3.12/bin/python3",
+	"dart.flutterSdkPath": "/Users/vbsec/Development/tools/flutter",
+	"editor.fontSize": 14,
+	"cursor.cpp.disabledLanguages": ["plaintext", "scminput"],
+	"cursor.cpp.enablePartialAccepts": true,
+	"gitlens.launchpad.indicator.enabled": false,
+	"window.commandCenter": false,
+	"git.autofetch": true,
+	"python.analysis.autoImportCompletions": true,
+	"python.analysis.typeCheckingMode": "basic",
+	"python.terminal.activateEnvironment": false,
+	"periscope.rgGlobExcludes": ["**/node_modules/**"],
+	"cmake.pinnedCommands": [
+		"workbench.action.tasks.configureTaskRunner",
+		"workbench.action.tasks.runTask"
+	],
+	"editor.formatOnSave": true,
+	"editor.fontLigatures": true,
+	"errorLens.enabled": true,
+	"rust-analyzer.testExplorer": true,
+	"terminal.integrated.allowedLinkSchemes": [
+		"file",
+		"http",
+		"https",
+		"mailto",
+		"vscode",
+		"vscode-insiders",
+		"docker-desktop"
+	],
+	"githubPullRequests.createOnPublishBranch": "never",
+	"rust-analyzer.check.features": "all",
+	"[yaml]": {
+		"editor.defaultFormatter": "redhat.vscode-yaml"
+	},
+	"git.fetchOnPull": true,
+	"gitlens.ai.model": "openai:gpt-4o",
+	"errorLens.followCursorMore": 3,
+	"cursor.composer.shouldAllowCustomModes": true,
+	"find-it-faster.general.useTerminalInEditor": true,
+	"typescript.tsserver.log": "off",
+	"workbench.editor.limit.enabled": true,
+	"workbench.editor.limit.value": 6,
+	"[typescript]": {
+		"editor.defaultFormatter": "biomejs.biome"
+	},
+	"extensions.experimental.affinity": {
+		"asvetliakov.vscode-neovim": 1
+	},
+	"[dockercompose]": {
+		"editor.insertSpaces": true,
+		"editor.tabSize": 2,
+		"editor.autoIndent": "advanced",
+		"editor.quickSuggestions": {
+			"other": true,
+			"comments": false,
+			"strings": true
+		},
+		"editor.defaultFormatter": "redhat.vscode-yaml"
+	},
+	"[github-actions-workflow]": {
+		"editor.defaultFormatter": "redhat.vscode-yaml"
+	},
+	"cursorpyright.analysis.autoImportCompletions": true,
+	"cursorpyright.analysis.inlayHints.callArgumentNames": true,
+	"cursorpyright.analysis.inlayHints.functionReturnTypes": true,
+	"cursorpyright.analysis.inlayHints.variableTypes": true,
+	"cursorpyright.analysis.typeCheckingMode": "basic",
+	"[sql]": {},
+	"terminal.integrated.automationProfile.osx": {
+		"path": "/usr/bin/zsh",
+		"args": ["--login"]
+	},
+	"mise.checkForNewMiseVersion": false,
+	"mise.configureExtensionsAutomatically": true
 }

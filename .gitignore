@@ -145,6 +145,9 @@ claude/.claude/projects
 claude/.claude/shell-snapshots
 claude/.claude/statsig
 claude/.claude/todos
+claude/.claude/plugins/marketplaces/
+claude/.claude/plugins/installed_plugins.json
+claude/.claude/plugins/known_marketplaces.json
 
 # Yazi
 yazi/.config/yazi/flavors/*.yazi
@@ -204,3 +207,9 @@ claude/.claude/.update.lock
 claude/.claude/ide/23852.lock
 yabai/.config/yabai/yabairc.save
 claude/.claude/history.jsonl
+claude/.claude/file-history
+claude/.claude/debug
+claude/.claude/ide
+claude/.claude/plans
+claude/.claude/plugins/cache/claude-plugins-official
+claude/.claude/stats-cache.json

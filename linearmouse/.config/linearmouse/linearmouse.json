@@ -1,26 +1,29 @@
 {
+  "$schema" : "https:\/\/schema.linearmouse.app\/0.10.2",
   "schemes" : [
     {
+      "buttons" : {
+        "universalBackForward" : true
+      },
       "if" : {
         "device" : {
-          "productID" : "0xc547",
           "category" : "mouse",
-          "vendorID" : "0x46d",
-          "productName" : "USB Receiver"
+          "productID" : "0xc547",
+          "productName" : "USB Receiver",
+          "vendorID" : "0x46d"
         }
       },
       "pointer" : {
-        "speed" : 0.2559,
-        "acceleration" : 0
+        "acceleration" : 0,
+        "speed" : 0.2559
       },
       "scrolling" : {
         "acceleration" : {
           "horizontal" : 0.83,
           "vertical" : 1
         },
-        "speed" : {
-          "horizontal" : 6.63,
-          "vertical" : 10
+        "distance" : {
+          "vertical" : "auto"
         },
         "modifiers" : {
           "horizontal" : {
@@ -37,29 +40,27 @@
             }
           }
         },
-        "distance" : {
-          "vertical" : "auto"
+        "speed" : {
+          "horizontal" : 6.63,
+          "vertical" : 10
         }
-      },
-      "buttons" : {
-        "universalBackForward" : true
       }
     },
     {
       "if" : {
         "device" : {
+          "category" : "trackpad",
           "productID" : "0x0",
           "productName" : "Apple Internal Keyboard \/ Trackpad",
-          "category" : "trackpad",
           "vendorID" : "0x0"
         }
       },
       "scrolling" : {
-        "reverse" : {
-          "vertical" : true
-        },
         "acceleration" : {
           "vertical" : 1
+        },
+        "reverse" : {
+          "vertical" : true
         },
         "speed" : {
           "vertical" : 2.54
@@ -69,16 +70,16 @@
     {
       "if" : {
         "device" : {
-          "productID" : "0xc094",
-          "vendorID" : "0x46d",
           "category" : "mouse",
+          "productID" : "0xc094",
+          "productName" : "PRO X Wireless",
           "serialNumber" : "95191E21",
-          "productName" : "PRO X Wireless"
+          "vendorID" : "0x46d"
         }
       },
       "pointer" : {
-        "disableAcceleration" : true,
-        "acceleration" : 0.7405
+        "acceleration" : 0.7405,
+        "disableAcceleration" : true
       },
       "scrolling" : {
         "acceleration" : {
@@ -87,26 +88,26 @@
         "distance" : {
           "vertical" : 3
         },
-        "speed" : {
-          "vertical" : 0
-        },
         "modifiers" : {
           "vertical" : {
             "shift" : {
               "type" : "alterOrientation"
             }
           }
+        },
+        "speed" : {
+          "vertical" : 0
         }
       }
     },
     {
       "if" : {
         "device" : {
+          "category" : "mouse",
+          "productID" : "0xb7",
           "productName" : "Razer DeathAdder V3 Pro",
           "serialNumber" : "000000000000",
-          "productID" : "0xb7",
-          "vendorID" : "0x1532",
-          "category" : "mouse"
+          "vendorID" : "0x1532"
         }
       },
       "pointer" : {
@@ -114,24 +115,43 @@
       },
       "scrolling" : {
         "acceleration" : {
-          "vertical" : 1.1,
-          "horizontal" : 1
+          "horizontal" : 1,
+          "vertical" : 1.12
+        },
+        "distance" : {
+          "vertical" : "auto"
         },
         "modifiers" : {
           "vertical" : {
-            "shift" : {
-              "type" : "alterOrientation"
-            },
             "command" : {
               "type" : "zoom"
+            },
+            "shift" : {
+              "type" : "alterOrientation"
             }
           }
         },
         "speed" : {
-          "vertical" : 8
+          "vertical" : 4.1
+        }
+      }
+    },
+    {
+      "if" : {
+        "app" : "net.runelite.launcher",
+        "device" : {
+          "category" : "mouse",
+          "productID" : "0xb7",
+          "productName" : "Razer DeathAdder V3 Pro",
+          "serialNumber" : "000000000000",
+          "vendorID" : "0x1532"
+        }
+      },
+      "scrolling" : {
+        "distance" : {
+          "vertical" : "13.2px"
         }
       }
     }
-  ],
-  "$schema" : "https:\/\/schema.linearmouse.app\/0.10.0"
+  ]
 }

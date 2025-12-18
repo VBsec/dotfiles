@@ -12,8 +12,13 @@
     ],
     "deny": [
       "Read(.env)",
-      "Read(.env.*)",
+      "Read(.env.local)",
       "Read(secrets/**)"
     ]
+  },
+  "model": "opus",
+  "enabledPlugins": {
+    "feature-dev@claude-plugins-official": true,
+    "github@claude-plugins-official": true
   }
 }
