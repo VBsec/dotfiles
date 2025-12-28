@@ -55,8 +55,7 @@ cf() {
 dev() {
   local dir
   dir=$({ fd --type d --max-depth 4 . ~/Development 2>/dev/null; \
-          fd --type d --max-depth 2 . ~/AndroidStudioProjects 2>/dev/null; \
-          fd --type d --max-depth 2 . ~/golioth/apps 2>/dev/null; } | \
+          fd --type d --max-depth 2 . ~/AndroidStudioProjects 2>/dev/null; } | \
           fzf --preview 'tree -C -L 1 {}') && cd "$dir"
 }
 
@@ -91,8 +90,7 @@ export KEYTIMEOUT=1
 dev-widget() {
   local dir
   dir=$({ fd --type d --max-depth 4 . ~/Development 2>/dev/null; \
-          fd --type d --max-depth 2 . ~/AndroidStudioProjects 2>/dev/null; \
-          fd --type d --max-depth 2 . ~/golioth/apps 2>/dev/null; } | \
+          fd --type d --max-depth 2 . ~/AndroidStudioProjects 2>/dev/null; } | \
           fzf --preview 'tree -C -L 1 {}')
   if [[ -n $dir ]]; then
     cd "$dir"
@@ -106,8 +104,7 @@ bindkey '^U' dev-widget
 dev-vim-widget() {
   local dir
   dir=$({ fd --type d --max-depth 4 . ~/Development 2>/dev/null; \
-          fd --type d --max-depth 2 . ~/AndroidStudioProjects 2>/dev/null; \
-          fd --type d --max-depth 2 . ~/golioth/apps 2>/dev/null; } | \
+          fd --type d --max-depth 2 . ~/AndroidStudioProjects 2>/dev/null; } | \
           fzf --preview 'tree -C -L 1 {}')
   if [[ -n $dir ]]; then
     cd "$dir"
@@ -122,8 +119,7 @@ bindkey '^V' dev-vim-widget
 dev-file-widget() {
   local file
   file=$({ fd --type f --max-depth 5 . ~/Development 2>/dev/null; \
-           fd --type f --max-depth 3 . ~/AndroidStudioProjects 2>/dev/null; \
-           fd --type f --max-depth 3 . ~/golioth/apps 2>/dev/null; } | \
+           fd --type f --max-depth 3 . ~/AndroidStudioProjects 2>/dev/null; } | \
            fzf --preview 'bat --style=numbers --color=always --line-range :500 {}')
   if [[ -n $file ]]; then
     BUFFER="nvim $file"
@@ -523,6 +519,13 @@ rgp() {
         --bind 'enter:execute(nvim {1} +{2})'
 }
 
+# Open .env files with Helix (including gitignored)
+henv() {
+  local file
+  file=$(fd --type f --hidden --no-ignore --exclude .git --exclude node_modules --exclude .venv --exclude venv '^\.env($|\.)' | fzf --preview 'bat --style=numbers --color=always {}')
+  [[ -n $file ]] && hx "$file"
+}
+
 
 
 # ============================================================================
@@ -585,6 +588,7 @@ export JAVA_HOME=/Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home
 export STM32_PRG_PATH=/Applications/STMicroelectronics/STM32Cube/STM32CubeProgrammer/STM32CubeProgrammer.app/Contents/MacOs/bin
 export STM32CubeMX_PATH=/Applications/STMicroelectronics/STM32CubeMX.app/Contents/Resources
 export PKG_CONFIG_PATH="/opt/homebrew/opt/ruby/lib/pkgconfig"
+export MISE_ENV=dev
 
 # Proto paths (if needed)
 # export PROTO_HOME="$HOME/.proto"
