@@ -565,6 +565,11 @@ alias gl='git pull'
 alias gp='git push'
 alias gst='git status'
 
+# Open buffer line in editor
+autoload -Uz edit-command-line
+zle -N edit-command-line
+bindkey '^x^e' edit-command-line
+
 # Auto-suggestions (lightweight alternative)
 # Only load in interactive shells with ZLE enabled
 if [[ $- == *i* ]] && [[ -f /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]]; then

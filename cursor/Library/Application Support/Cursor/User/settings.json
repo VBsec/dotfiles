@@ -13,7 +13,7 @@
 		"editor.defaultFormatter": "esbenp.prettier-vscode"
 	},
 	"security.workspace.trust.untrustedFiles": "open",
-	"workbench.colorTheme": "Ayu Dark Bordered",
+	"workbench.colorTheme": "Ayu Dark",
 	"editor.inlineSuggest.enabled": true,
 	"[typescriptreact]": {
 		"editor.defaultFormatter": "esbenp.prettier-vscode"

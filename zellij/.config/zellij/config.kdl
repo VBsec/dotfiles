@@ -135,6 +135,7 @@ keybinds clear-defaults=true {
         bind "Alt right" { MoveTab "right"; }
         bind "Alt n" { NewPane; }
         bind "Alt m" { NewTab; }
+        bind "Alt d" { NewTab { layout "dev"; }; }
     }
     shared_except "locked" "renametab" "renamepane" {
         bind "Ctrl g" { SwitchToMode "locked"; }
@@ -274,7 +275,7 @@ default_mode "locked"
 //   - true (default, enabled)
 //   - false
 // 
-pane_frames false
+pane_frames true
  
 // When attaching to an existing session with other users,
 // should the session be mirrored (true)
@@ -337,13 +338,13 @@ on_force_close "detach"
 // otherwise this will error if such a session exists.
 // Default: <RANDOM>
 // 
-// session_name "My singleton session"
+session_name "primary"
  
 // When `session_name` is provided, attaches to that session
 // if it is already running or creates it otherwise.
 // Default: false
 // 
-// attach_to_session true
+attach_to_session true
  
 // Toggle between having Zellij lay out panes according to a predefined set of layouts whenever possible
 // Options:
