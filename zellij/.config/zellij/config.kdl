@@ -17,6 +17,8 @@ keybinds clear-defaults=true {
         bind "tab" { SwitchFocus; }
         bind "g" { PreviousSwapLayout; }
         bind "b" { NextSwapLayout; }
+        bind "s" { NewPane "stacked"; SwitchToMode "locked"; }
+        bind "i" { TogglePanePinned; SwitchToMode "locked"; }
     }
     tab {
         bind "1" { GoToTab 1; SwitchToMode "locked"; }
@@ -124,8 +126,8 @@ keybinds clear-defaults=true {
         bind "Ctrl j" { MoveFocus "down"; }
         bind "Ctrl k" { MoveFocus "up"; }
         bind "Ctrl l" { MoveFocusOrTab "right"; }
-        bind "Shift Ctrl tab" { GoToPreviousTab; }
-        bind "Ctrl tab" { GoToNextTab; }
+        bind "Ctrl Shift Tab" { GoToPreviousTab; }
+        bind "Ctrl Tab" { GoToNextTab; }
         bind "Alt o" { Resize "Increase"; }
         bind "Alt i" { Resize "Decrease"; }
         bind "Alt f" { ToggleFloatingPanes; }
@@ -376,7 +378,12 @@ on_force_close "detach"
 // Default: true
 // 
 // styled_underlines false
- 
+
+// Toggle stacked resize behavior - panes auto-stack with neighbors when resizing
+// Default: true
+//
+// stacked_resize false
+
 // How often in seconds sessions are serialized
 // 
 // serialization_interval 10000
