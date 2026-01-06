@@ -15,7 +15,8 @@ padding.x = 5
 padding.y = 5
 
 decorations = "buttonless"
-option_as_alt = "OnlyLeft"
+# Set to None to let macOS handle Option key for compose/input methods
+option_as_alt = "None"
 
 opacity = 0.92
 

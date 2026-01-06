@@ -32,6 +32,9 @@ return {
       biome = {
         cmd = { "biome", "lsp-proxy" },
       },
+      gopls = {
+        root_dir = util.root_pattern("go.mod", ".git"),
+      },
     },
   },
 }
