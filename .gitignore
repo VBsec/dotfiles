@@ -211,7 +211,7 @@ claude/.claude/file-history
 claude/.claude/debug
 claude/.claude/ide
 claude/.claude/plans
-claude/.claude/plugins/cache/claude-plugins-official
 claude/.claude/stats-cache.json
 claude/.claude/plugins
 claude/.claude/telemetry
+claude/.claude/image-cache
