@@ -219,14 +219,15 @@ local function textEditingMappings()
   map("n", "g]", "A]<Esc>", { desc = "Add ] at end of line" })
   map("n", "g}", "A}<Esc>", { desc = "Add } at end of line" })
 
-  -- Insert mode shortcuts using Alt key
-  map("i", "<M-;>", "<Esc>A;i", { desc = "Jump to end, add semicolon, exit insert" })
-  map("i", "<M-,>", "<Esc>A,i", { desc = "Jump to end, add comma, exit insert" })
-  map("i", "<M-:>", "<Esc>A:i", { desc = "Jump to end, add comma, exit insert" })
-
-  -- Insert mode navigation
-  map("i", "<M-a>", "<C-o>^", { desc = "Jump to start of line in insert mode" })
-  map("i", "<M-e>", "<C-o>$", { desc = "Jump to end of line in insert mode" })
+  -- Move lines up/down (Ctrl+Cmd+j/k) - replaces Alt+j/k to free Option for Scandinavian compose
+  -- Delete LazyVim defaults first
+  vim.keymap.del({ "n", "i", "v" }, "<A-j>")
+  vim.keymap.del({ "n", "i", "v" }, "<A-k>")
+  -- Use Ctrl+Cmd directly (Ghostty passes through with unbind)
+  vim.keymap.set("n", "<C-D-j>", "<cmd>m .+1<cr>==", { desc = "Move line down" })
+  vim.keymap.set("n", "<C-D-k>", "<cmd>m .-2<cr>==", { desc = "Move line up" })
+  vim.keymap.set("v", "<C-D-j>", ":m '>+1<cr>gv=gv", { desc = "Move selection down" })
+  vim.keymap.set("v", "<C-D-k>", ":m '<-2<cr>gv=gv", { desc = "Move selection up" })
 end
 
 -- Apply text editing mappings to both environments

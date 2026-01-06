@@ -7,7 +7,8 @@ font-thicken = true
 font-size = 14
 window-padding-x = 5
 window-padding-y = 5
-# macos-option-as-alt = left
+# Set to false to let macOS handle Option key for compose/input methods
+macos-option-as-alt = false
 
 # Pass Ctrl+Tab to terminal apps (zellij tab switching)
 keybind = ctrl+tab=esc:[27;5;9~
@@ -42,3 +43,7 @@ keybind = super+page_down=scroll_page_down
 # custom-shader = shaders-fearless/static.glsl
 
 keybind = shift+enter=text:\n
+
+# Pass Ctrl+Cmd+j/k to terminal for Neovim line moving
+keybind = ctrl+super+j=unbind
+keybind = ctrl+super+k=unbind
