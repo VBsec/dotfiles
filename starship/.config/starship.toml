@@ -15,7 +15,6 @@ $deno\
 $nodejs\
 $rust\
 $golang\
-$python\
 $php\
 [](fg:#212736 bg:#1d2230)\
 $time\
@@ -56,8 +55,7 @@ style = "bg:#212736"
 format = '[[ $symbol ($version) ](fg:#769ff0 bg:#212736)]($style)'
 
 [python]
-style = "bg:#212736"
-format = '[[ $symbol ($version) ](fg:#769ff0 bg:#212736)]($style)'
+disabled = true
 
 [bun]
 style = "bg:#212736"

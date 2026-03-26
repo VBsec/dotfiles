@@ -23,13 +23,23 @@ else
   })
 end
 
+-- Force-stop LSP clients before exit to prevent "quit with exit code" errors
+-- (Taplo and others don't handle async shutdown gracefully, causing a race condition)
+vim.api.nvim_create_autocmd("VimLeavePre", {
+  callback = function()
+    for _, client in ipairs(vim.lsp.get_clients()) do
+      client:stop(true)
+    end
+  end,
+})
+
 -- Open snacks picker when starting nvim with a directory
 vim.api.nvim_create_autocmd("VimEnter", {
   callback = function()
     local arg = vim.fn.argv(0)
     if vim.fn.isdirectory(arg) == 1 then
       vim.cmd("cd " .. arg)
-      Snacks.picker.files()
+      Snacks.picker.smart()
     end
   end,
 })

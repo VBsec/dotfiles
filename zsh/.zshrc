@@ -12,10 +12,8 @@ export EDITOR=/opt/homebrew/bin/nvim
 # Basic PATH setup - do once, early
 typeset -U PATH path  # Unique entries only
 path=(
-  # $HOME/.proto/shims
-  # $HOME/.proto/bin
   $HOME/.local/bin
-  $HOME/.deno/bin
+  $HOME/.bun/bin
   $HOME/Library/pnpm
   $HOME/.cargo/bin
   /opt/homebrew/bin
@@ -23,6 +21,7 @@ path=(
   /opt/homebrew/opt/llvm/bin
   /opt/homebrew/opt/binutils/bin
   /opt/homebrew/opt/ruby/bin
+  /opt/homebrew/lib/ruby/gems/3.4.0/bin
   /opt/homebrew/opt/postgresql@16/bin
   $path
 )
@@ -34,8 +33,10 @@ alias v=nvim
 alias py=python
 alias p=pnpm
 alias lg=lazygit
+alias lad=lazydocker
+alias c=claude
+alias cbypass="claude --dangerously-skip-permissions"
 alias printpath="echo \$PATH | tr ':' '\n'"
-alias wip="git add -A && git commit -m 'wip' && git push"
 
 # Fast functions
 mkcd() { mkdir -p "$1" && cd "$1"; }
@@ -141,6 +142,33 @@ dot-widget() {
 }
 zle -N dot-widget
 bindkey '^P' dot-widget
+
+# Ctrl+G to fzf markdown files and view with glow
+md-glow-widget() {
+  local file
+  file=$(fd --type f --extension md --hidden --no-ignore --exclude node_modules --exclude .git 2>/dev/null | \
+    fzf --preview 'bat --style=numbers --color=always --line-range :200 {}')
+  if [[ -n $file ]]; then
+    glow -p "$file"
+    zle reset-prompt
+  fi
+}
+zle -N md-glow-widget
+bindkey '^G' md-glow-widget
+
+# Ctrl+E for fzf directory navigation (replacement for Alt+C which conflicts with ghostty)
+fzf-cd-widget-custom() {
+  setopt localoptions pipefail no_aliases 2> /dev/null
+  local dir="$(fd --type d --hidden --follow --exclude .git 2>/dev/null | FZF_DEFAULT_OPTS="--height ${FZF_TMUX_HEIGHT:-40%} --reverse --scheme=path --bind=ctrl-z:ignore ${FZF_DEFAULT_OPTS-} ${FZF_ALT_C_OPTS-}" fzf +m)"
+  if [[ -z "$dir" ]]; then
+    zle redisplay
+    return 0
+  fi
+  LBUFFER+="${(q)dir}"
+  zle redisplay
+}
+zle -N fzf-cd-widget-custom
+bindkey '^E' fzf-cd-widget-custom
 
 # Add brew completions to FPATH before compinit
 if type brew &>/dev/null; then
@@ -496,6 +524,24 @@ glog() {
   git log --graph --pretty=format:'%C(auto)%h%d %s %C(black)%C(bold)%cr %C(auto)%an' "$@"
 }
 
+# Minimal HTTP server that accepts GET and POST (default port 8080)
+serve() {
+  local port="${1:-8080}"
+  SERVE_PORT="$port" python3 -c '
+import sys, os
+from http.server import HTTPServer, BaseHTTPRequestHandler
+port = int(os.environ["SERVE_PORT"])
+class H(BaseHTTPRequestHandler):
+    def do_GET(self): self.send_response(200); self.end_headers()
+    def do_POST(self): self.send_response(200); self.end_headers()
+    def log_message(self, fmt, *a): print("[%s] %s" % (self.address_string(), fmt % a))
+server = HTTPServer(("", port), H)
+print("Serving on http://localhost:%d (Ctrl+C to stop)" % port)
+try: server.serve_forever()
+except KeyboardInterrupt: print(); server.server_close(); sys.exit(0)
+'
+}
+
 # Quick Python virtual env
 venv() {
   if [[ -d .venv ]]; then
@@ -507,6 +553,16 @@ venv() {
   fi
 }
 
+
+# Ask Claude for a shell command
+# Usage: cmd "find all large files" or cmd "convert mp4 to gif"
+cmd() {
+  local result
+  result=$(claude -p "Output ONLY a single shell command for: $*. No explanation, no markdown, no code blocks - just the raw command." 2>/dev/null)
+  if [[ -n $result ]]; then
+    print -z "$result"
+  fi
+}
 
 # Quick ripgrep with preview
 rgp() {
@@ -564,6 +620,8 @@ alias gd='git diff'
 alias gl='git pull'
 alias gp='git push'
 alias gst='git status'
+alias wsc='wt switch --create -x claude'
+alias wso='wt switch --create -x opencode'
 
 # Open buffer line in editor
 autoload -Uz edit-command-line
@@ -593,7 +651,6 @@ export JAVA_HOME=/Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home
 export STM32_PRG_PATH=/Applications/STMicroelectronics/STM32Cube/STM32CubeProgrammer/STM32CubeProgrammer.app/Contents/MacOs/bin
 export STM32CubeMX_PATH=/Applications/STMicroelectronics/STM32CubeMX.app/Contents/Resources
 export PKG_CONFIG_PATH="/opt/homebrew/opt/ruby/lib/pkgconfig"
-export MISE_ENV=dev
 
 # Proto paths (if needed)
 # export PROTO_HOME="$HOME/.proto"
@@ -601,3 +658,16 @@ export MISE_ENV=dev
 
 # Enable profiling: uncomment to see what's slow
 # zprof
+
+if command -v wt >/dev/null 2>&1; then eval "$(command wt config shell init zsh)"; fi
+# The following lines have been added by Docker Desktop to enable Docker CLI completions.
+fpath=(/Users/vbsec/.docker/completions $fpath)
+autoload -Uz compinit
+compinit
+# End of Docker CLI completions
+
+# Added by Antigravity
+export PATH="/Users/vbsec/.antigravity/antigravity/bin:$PATH"
+
+autoload -U +X bashcompinit && bashcompinit
+complete -o nospace -C /opt/homebrew/bin/mc mc

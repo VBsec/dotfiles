@@ -26,6 +26,12 @@
       "Bash(git diff:*)",
       "Bash(git show:*)",
       "Bash(git branch:*)",
+      "Bash(git remote:*)",
+      "Bash(git fetch:*)",
+      "Bash(git stash list:*)",
+      "Bash(git stash show:*)",
+      "Bash(git worktree list:*)",
+      "Bash(git -C *:*)",
       "Bash(gh pr list:*)",
       "Bash(gh pr view:*)",
       "Bash(gh issue list:*)",
@@ -65,21 +71,52 @@
       "Bash(python -m unittest:*)",
       "Bash(python -m mypy:*)",
       "Bash(python -m ruff:*)",
+      "Bash(make:*)",
+      "Bash(make -j*)",
+      "Bash(python3 build-all.py*)",
+      "Bash(./conf.sh*)",
+      "Bash(./build.sh*)",
+      "Bash(./flash.sh*)",
+      "Bash(arm-none-eabi-size:*)",
+      "Bash(arm-none-eabi-nm:*)",
+      "Bash(arm-none-eabi-objdump:*)",
       "WebSearch",
       "WebFetch(domain:github.com)",
       "WebFetch(domain:raw.githubusercontent.com)",
       "mcp__sequential-thinking__sequentialthinking"
     ],
     "deny": [
-      "Read(.env.infisica*)"
+      "Read(.env.infisica*)",
+      "Read(.env)"
     ],
     "defaultMode": "default"
   },
-  "model": "opus",
+  "model": "opus[1m]",
+  "statusLine": {
+    "type": "command",
+    "command": "wt list statusline --format=claude-code"
+  },
   "enabledPlugins": {
     "context7@claude-plugins-official": true,
-    "gopls-lsp@claude-plugins-official": true,
-    "typescript-lsp@claude-plugins-official": true
+    "typescript-lsp@claude-plugins-official": true,
+    "clangd-lsp@claude-plugins-official": false,
+    "agent-teams@claude-code-workflows": true,
+    "conductor@claude-code-workflows": true,
+    "claude-md-management@claude-plugins-official": true,
+    "commit-commands@claude-plugins-official": true,
+    "code-simplifier@claude-plugins-official": true,
+    "expo-app-design@expo-plugins": true,
+    "upgrading-expo@expo-plugins": false,
+    "expo-deployment@expo-plugins": true,
+    "worktrunk@worktrunk": true,
+    "frontend-design@claude-plugins-official": true,
+    "claude-code-setup@claude-plugins-official": true,
+    "firecrawl@claude-plugins-official": false,
+    "skill-creator@claude-plugins-official": true,
+    "notion@claude-plugins-official": true
   },
-  "alwaysThinkingEnabled": false
+  "alwaysThinkingEnabled": false,
+  "autoUpdatesChannel": "latest",
+  "voiceEnabled": true,
+  "skipDangerousModePermissionPrompt": true
 }

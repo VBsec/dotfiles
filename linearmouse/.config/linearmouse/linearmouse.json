@@ -111,6 +111,7 @@
         }
       },
       "pointer" : {
+        "acceleration" : 0.8,
         "disableAcceleration" : true
       },
       "scrolling" : {
@@ -150,6 +151,39 @@
       "scrolling" : {
         "distance" : {
           "vertical" : "13.2px"
+        }
+      }
+    },
+    {
+      "if" : {
+        "device" : {
+          "category" : "mouse",
+          "productID" : "0xb6",
+          "productName" : "Razer DeathAdder V3 Pro",
+          "serialNumber" : "000000000000",
+          "vendorID" : "0x1532"
+        }
+      },
+      "pointer" : {
+        "acceleration" : 0.8,
+        "disableAcceleration" : true
+      },
+      "scrolling" : {
+        "acceleration" : {
+          "vertical" : 1.12
+        },
+        "modifiers" : {
+          "vertical" : {
+            "command" : {
+              "type" : "zoom"
+            },
+            "shift" : {
+              "type" : "alterOrientation"
+            }
+          }
+        },
+        "speed" : {
+          "vertical" : 4.1
         }
       }
     }

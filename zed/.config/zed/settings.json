@@ -7,11 +7,12 @@
 // custom settings, run `zed: open default settings` from the
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
-  "git_panel": {
-    "sort_by_path": true
+  "edit_predictions": {
+    "provider": "zed",
   },
-  "features": {
-    "edit_prediction_provider": "zed",
+  "git_panel": {
+    "tree_view": true,
+    "sort_by_path": true,
   },
   "vim_mode": true,
   "relative_line_numbers": "enabled",
@@ -47,6 +48,41 @@
         "require_config_file": true,
       },
     },
+    "tailwindcss-language-server": {
+      "settings": {
+        "classAttributes": [
+          "class",
+          "className",
+          "headerClassName",
+          "contentContainerClassName",
+          "columnWrapperClassName",
+          "endFillColorClassName",
+          "imageClassName",
+          "tintColorClassName",
+          "ios_backgroundColorClassName",
+          "thumbColorClassName",
+          "trackColorOnClassName",
+          "trackColorOffClassName",
+          "selectionColorClassName",
+          "cursorColorClassName",
+          "underlineColorAndroidClassName",
+          "placeholderTextColorClassName",
+          "selectionHandleColorClassName",
+          "colorsClassName",
+          "progressBackgroundColorClassName",
+          "titleColorClassName",
+          "underlayColorClassName",
+          "colorClassName",
+          "drawerBackgroundColorClassName",
+          "statusBarBackgroundColorClassName",
+          "backdropColorClassName",
+          "backgroundColorClassName",
+          "ListFooterComponentClassName",
+          "ListHeaderComponentClassName",
+        ],
+        "classFunctions": ["useResolveClassNames"],
+      },
+    },
   },
   "languages": {
     "JavaScript": {
@@ -76,5 +112,12 @@
         "source.fixAll.biome": true,
       },
     },
+    "Markdown": {
+      "formatter": { "language_server": { "name": "dprint" } },
+      "format_on_save": "on",
+    },
+  },
+  "file_types": {
+    "Shell Script": ["**/\\.husky/*"],
   },
 }

@@ -219,5 +219,7 @@
 		"args": ["--login"]
 	},
 	"mise.checkForNewMiseVersion": false,
-	"mise.configureExtensionsAutomatically": true
+	"mise.configureExtensionsAutomatically": true,
+	"update.releaseTrack": "dev",
+	"update.mode": "silentlyApplyOnQuit"
 }

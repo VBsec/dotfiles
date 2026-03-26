@@ -215,3 +215,11 @@ claude/.claude/stats-cache.json
 claude/.claude/plugins
 claude/.claude/telemetry
 claude/.claude/image-cache
+/claude/.claude/backups
+/claude/.claude/cache
+/claude/.claude/paste-cache
+/claude/.claude/sessions
+/claude/.claude/tasks
+/claude/.claude/m365-admin.json
+/claude/.claude/m365-admin-cert.pfx
+/claude/.claude/security_warnings_*.json
