@@ -6,7 +6,7 @@ if vim.g.vscode then
 else
   require("config.lazy")
   require("nvim-ts-autotag").setup({})
-  vim.api.nvim_command("highlight LineNr guifg=#bae67e ctermfg=149")
-  vim.api.nvim_command("highlight CursorLineNr guifg=#ef6b73 ctermfg=203")
-  vim.api.nvim_command("highlight CursorLine guibg=#1C1C3E")
+  vim.cmd("highlight LineNr guifg=#bae67e ctermfg=149")
+  vim.cmd("highlight CursorLineNr guifg=#ef6b73 ctermfg=203")
+  vim.cmd("highlight CursorLine guibg=#1C1C3E")
 end

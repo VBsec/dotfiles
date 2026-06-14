@@ -671,3 +671,13 @@ export PATH="/Users/vbsec/.antigravity/antigravity/bin:$PATH"
 
 autoload -U +X bashcompinit && bashcompinit
 complete -o nospace -C /opt/homebrew/bin/mc mc
+
+# pi coding agent: auto-reapply the openai-completions max_tokens fallback patch
+# (upstream pi #5375/#5595, unfixed). The patch lives in node_modules and is wiped
+# by `pi update`; this wrapper re-applies it idempotently before launching pi.
+pi() {
+    if command -v pi-patch-maxtokens >/dev/null 2>&1; then
+        pi-patch-maxtokens --check >/dev/null 2>&1 || pi-patch-maxtokens >/dev/null 2>&1
+    fi
+    command pi "$@"
+}

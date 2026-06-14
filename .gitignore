@@ -140,14 +140,38 @@ logs/
 # ============================================================================
 # Application Specific
 # ============================================================================
-# Claude
-claude/.claude/projects
-claude/.claude/shell-snapshots
-claude/.claude/statsig
-claude/.claude/todos
-claude/.claude/plugins/marketplaces/
-claude/.claude/plugins/installed_plugins.json
-claude/.claude/plugins/known_marketplaces.json
+# Claude Code (~/.claude)
+# Whitelist approach: ignore the whole runtime/state directory, then re-include
+# only the files that are genuine, portable user config. Claude Code constantly
+# writes new state files/dirs here (sessions, caches, history, tokens, etc.), so
+# allow-listing is far more robust than chasing each one.
+claude/.claude/*
+
+# Re-include tracked config (negate the ignore above)
+!claude/.claude/CLAUDE.md
+!claude/.claude/settings.json
+!claude/.claude/package.json
+!claude/.claude/uninstall-commands.sh
+!claude/.claude/gsd-file-manifest.json
+# Directories: must un-ignore the dir itself before its contents
+!claude/.claude/commands/
+!claude/.claude/agents/
+!claude/.claude/hooks/
+!claude/.claude/skills/
+!claude/.claude/get-shit-done/
+# Plugins: keep only the declarative config, not installed/cached repos
+!claude/.claude/plugins/
+claude/.claude/plugins/*
+!claude/.claude/plugins/config.json
+
+# Never track secrets/credentials/state (defensive — covered by the * above too)
+claude/.claude/.credentials.json
+claude/.claude/settings.local.json
+claude/.claude/m365-admin*.json
+claude/.claude/m365-admin*.pfx
+claude/.claude/m365-admin*.pem
+claude/.claude/m365-admin*.key
+claude/.claude/security_warnings_*.json
 
 # Yazi
 yazi/.config/yazi/flavors/*.yazi
@@ -203,23 +227,6 @@ credentials/
 *.pid
 *.seed
 *.pid.lock
-claude/.claude/.update.lock
-claude/.claude/ide/23852.lock
 yabai/.config/yabai/yabairc.save
-claude/.claude/history.jsonl
-claude/.claude/file-history
-claude/.claude/debug
-claude/.claude/ide
-claude/.claude/plans
-claude/.claude/stats-cache.json
-claude/.claude/plugins
-claude/.claude/telemetry
-claude/.claude/image-cache
-/claude/.claude/backups
-/claude/.claude/cache
-/claude/.claude/paste-cache
-/claude/.claude/sessions
-/claude/.claude/tasks
-/claude/.claude/m365-admin.json
-/claude/.claude/m365-admin-cert.pfx
-/claude/.claude/security_warnings_*.json
+# Note: all claude/.claude/* runtime state is handled by the whitelist in the
+# "Claude Code" block above — no per-file entries needed here.
