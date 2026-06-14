@@ -61,8 +61,10 @@ vim.pack.add({
   { src = gh("stevearc/oil.nvim") },
   { src = gh("mg979/vim-visual-multi") },
 
-  -- Treesitter (stable master branch: keeps the configs.setup + auto-install API)
-  { src = gh("nvim-treesitter/nvim-treesitter"), version = "master" },
+  -- Treesitter: the `main` branch is the one rewritten for Neovim 0.12's
+  -- native treesitter API. (The legacy `master` branch crashes on 0.12 in
+  -- markdown injection queries — node:range on multi-node captures.)
+  { src = gh("nvim-treesitter/nvim-treesitter"), version = "main" },
 
   -- Markdown
   { src = gh("MeanderingProgrammer/render-markdown.nvim") },
@@ -95,37 +97,58 @@ require("tokyonight").setup({
 })
 vim.cmd.colorscheme("tokyonight")
 
--- Treesitter -----------------------------------------------------------------
-require("nvim-treesitter.configs").setup({
-  ensure_installed = {
-    "c",
-    "cmake",
-    "devicetree",
-    "kconfig",
-    "python",
-    "typescript",
-    "tsx",
-    "javascript",
-    "json",
-    "jsonc",
-    "html",
-    "css",
-    "markdown",
-    "markdown_inline",
-    "yaml",
-    "toml",
-    "dockerfile",
-    "lua",
-    "luadoc",
-    "bash",
-    "vim",
-    "vimdoc",
-    "query",
-  },
-  auto_install = true,
-  highlight = { enable = true },
-  indent = { enable = true },
-})
+-- Treesitter (main branch / native 0.12 API) --------------------------------
+local ts_parsers = {
+  "c",
+  "cmake",
+  "devicetree",
+  "kconfig",
+  "python",
+  "typescript",
+  "tsx",
+  "javascript",
+  "json",
+  "html",
+  "css",
+  "markdown",
+  "markdown_inline",
+  "yaml",
+  "toml",
+  "dockerfile",
+  "lua",
+  "luadoc",
+  "bash",
+  "vim",
+  "vimdoc",
+  "query",
+}
+do
+  local ts = require("nvim-treesitter")
+  -- Install any missing parsers (async).
+  local installed = ts.get_installed and ts.get_installed("parsers") or {}
+  local missing = vim.tbl_filter(function(p)
+    return not vim.list_contains(installed, p)
+  end, ts_parsers)
+  if #missing > 0 then
+    ts.install(missing)
+  end
+
+  -- Start native highlighting + indent for the languages we use. Map filetypes
+  -- to parser names; folding is already set globally in options.lua.
+  local ft_to_lang = {
+    typescriptreact = "tsx",
+    javascriptreact = "javascript",
+  }
+  vim.api.nvim_create_autocmd("FileType", {
+    callback = function(ev)
+      local lang = vim.treesitter.language.get_lang(ev.match) or ft_to_lang[ev.match] or ev.match
+      if vim.list_contains(ts_parsers, lang) then
+        pcall(vim.treesitter.start, ev.buf, lang)
+        vim.bo[ev.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+      end
+    end,
+  })
+end
 
 -- nvim-ts-autotag (html/jsx tag close/rename).
 require("nvim-ts-autotag").setup({})
