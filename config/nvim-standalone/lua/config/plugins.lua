@@ -73,6 +73,11 @@ vim.pack.add({
   { src = gh("stevearc/oil.nvim") },
   { src = gh("mg979/vim-visual-multi") },
 
+  -- Git: gitsigns (in-buffer hunk signs/nav/preview) + diffview (multi-file
+  -- review UI; `:DiffviewOpen HEAD` reviews everything since the last commit).
+  { src = gh("lewis6991/gitsigns.nvim") },
+  { src = gh("sindrets/diffview.nvim") },
+
   -- Treesitter: the `main` branch is the one rewritten for Neovim 0.12's
   -- native treesitter API. (The legacy `master` branch crashes on 0.12 in
   -- markdown injection queries — node:range on multi-node captures.)
@@ -368,6 +373,7 @@ wk.setup({
       { "<leader>c", group = "code" },
       { "<leader>f", group = "file/find" },
       { "<leader>g", group = "git" },
+      { "<leader>gh", group = "git hunks" },
       { "<leader>m", group = "markdown" },
       { "<leader>s", group = "search" },
       { "<leader>sn", group = "noice" },
@@ -527,6 +533,87 @@ require("oil").setup({
     ["q"] = "actions.close",
   },
 })
+
+-- gitsigns -------------------------------------------------------------------
+-- In-buffer review of changes: gutter signs, hunk navigation, inline preview,
+-- and per-file diff splits. Baseline defaults to the index; for whole-session
+-- review against the last commit use `<leader>ghD` / diffview below.
+require("gitsigns").setup({
+  on_attach = function(buf)
+    local gs = require("gitsigns")
+    local function m(mode, lhs, rhs, desc)
+      vim.keymap.set(mode, lhs, rhs, { buffer = buf, desc = desc })
+    end
+
+    -- Hunk navigation. In diff mode fall back to vanilla ]c/[c.
+    m("n", "]h", function()
+      if vim.wo.diff then
+        vim.cmd.normal({ "]c", bang = true })
+      else
+        gs.nav_hunk("next")
+      end
+    end, "Next hunk")
+    m("n", "[h", function()
+      if vim.wo.diff then
+        vim.cmd.normal({ "[c", bang = true })
+      else
+        gs.nav_hunk("prev")
+      end
+    end, "Prev hunk")
+
+    -- Hunk actions.
+    m("n", "<leader>ghs", gs.stage_hunk, "Stage hunk")
+    m("n", "<leader>ghr", gs.reset_hunk, "Reset hunk")
+    m("v", "<leader>ghs", function()
+      gs.stage_hunk({ vim.fn.line("."), vim.fn.line("v") })
+    end, "Stage hunk")
+    m("v", "<leader>ghr", function()
+      gs.reset_hunk({ vim.fn.line("."), vim.fn.line("v") })
+    end, "Reset hunk")
+    m("n", "<leader>ghS", gs.stage_buffer, "Stage buffer")
+    m("n", "<leader>ghu", gs.undo_stage_hunk, "Undo stage hunk")
+    m("n", "<leader>ghR", gs.reset_buffer, "Reset buffer")
+    m("n", "<leader>ghp", gs.preview_hunk_inline, "Preview hunk inline")
+    m("n", "<leader>ghb", function()
+      gs.blame_line({ full = true })
+    end, "Blame line")
+
+    -- Diff this buffer: vs index, or vs last commit (whole-session baseline).
+    m("n", "<leader>ghd", gs.diffthis, "Diff against index")
+    m("n", "<leader>ghD", function()
+      gs.diffthis("HEAD")
+    end, "Diff against last commit")
+  end,
+})
+-- Toggle gitsigns line highlight / blame.
+kmap("n", "<leader>ub", function()
+  require("gitsigns").toggle_current_line_blame()
+end, { desc = "Toggle git blame line" })
+kmap("n", "<leader>uG", function()
+  require("gitsigns").toggle_linehl()
+end, { desc = "Toggle git line highlight" })
+
+-- diffview -------------------------------------------------------------------
+-- Multi-file review screen. `<leader>gd` reviews the whole session: every file
+-- changed since the last commit, side-by-side, with a file panel to walk them.
+-- `q` closes diffview from anywhere (file panel, diff windows, file history) —
+-- ctrl-w window nav is awkward since zellij owns <C-hjkl>; <Tab>/<S-Tab> walk
+-- files, <leader>e toggles the panel, and <leader>gc / q close.
+local dv_actions = require("diffview.actions")
+require("diffview").setup({
+  enhanced_diff_hl = true,
+  keymaps = {
+    view = { { "n", "q", dv_actions.close, { desc = "Close diffview" } } },
+    file_panel = { { "n", "q", dv_actions.close, { desc = "Close diffview" } } },
+    file_history_panel = { { "n", "q", dv_actions.close, { desc = "Close diffview" } } },
+  },
+})
+kmap("n", "<leader>gd", "<cmd>DiffviewOpen HEAD<cr>", { desc = "Diff review: uncommitted changes (vs HEAD)" })
+kmap("n", "<leader>gr", "<cmd>DiffviewOpen HEAD~1..HEAD<cr>", { desc = "Diff review: last commit" })
+kmap("n", "<leader>gD", "<cmd>DiffviewOpen<cr>", { desc = "Diff review: unstaged (vs index)" })
+kmap("n", "<leader>gc", "<cmd>DiffviewClose<cr>", { desc = "Diff review: close" })
+kmap("n", "<leader>gf", "<cmd>DiffviewFileHistory %<cr>", { desc = "File history (current file)" })
+kmap("n", "<leader>gF", "<cmd>DiffviewFileHistory<cr>", { desc = "File history (branch)" })
 
 -- render-markdown ------------------------------------------------------------
 require("render-markdown").setup({
