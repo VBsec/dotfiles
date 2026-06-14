@@ -187,14 +187,14 @@ pi/.pi/agent/trust.json
 pi/.pi/agent/sessions/
 
 # Yazi
-yazi/.config/yazi/flavors/*.yazi
+config/yazi/flavors/*.yazi
 
 # Zed
-zed/.config/zed/conversations
-zed/.config/zed/prompts/*.mdb
+config/zed/conversations
+config/zed/prompts/*.mdb
 
 # Ghostty
-ghostty/.config/ghostty/themes/
+config/ghostty/themes/
 
 # ============================================================================
 # Secrets and Credentials
@@ -240,6 +240,6 @@ credentials/
 *.pid
 *.seed
 *.pid.lock
-yabai/.config/yabai/yabairc.save
+config/yabai/yabairc.save
 # Note: all claude/.claude/* runtime state is handled by the whitelist in the
 # "Claude Code" block above — no per-file entries needed here.
