@@ -18,7 +18,19 @@ vim.api.nvim_create_autocmd("PackChanged", {
     local kind = ev.data.kind
     if (kind == "install" or kind == "update") and name == "markdown-preview.nvim" then
       vim.notify("Building markdown-preview.nvim…", vim.log.levels.INFO)
-      vim.fn.system({ "npx", "--yes", "yarn", "install" }, ev.data.path .. "/app")
+      -- Install the preview server deps in the plugin's app/ dir. Use jobstart
+      -- with an explicit cwd (vim.fn.system's 2nd arg is stdin, not cwd).
+      vim.fn.jobstart({ "npx", "--yes", "yarn", "install" }, {
+        cwd = ev.data.path .. "/app",
+        on_exit = function(_, code)
+          vim.schedule(function()
+            vim.notify(
+              "markdown-preview build " .. (code == 0 and "done ✓" or "failed (exit " .. code .. ")"),
+              code == 0 and vim.log.levels.INFO or vim.log.levels.ERROR
+            )
+          end)
+        end,
+      })
     end
   end,
 })
@@ -356,6 +368,7 @@ wk.setup({
       { "<leader>c", group = "code" },
       { "<leader>f", group = "file/find" },
       { "<leader>g", group = "git" },
+      { "<leader>m", group = "markdown" },
       { "<leader>s", group = "search" },
       { "<leader>sn", group = "noice" },
       { "<leader>t", group = "test" },
@@ -522,9 +535,33 @@ require("render-markdown").setup({
 
 -- markdown-preview (browser preview server) ----------------------------------
 -- Plugin provides :MarkdownPreview / :MarkdownPreviewStop. Build runs via the
--- PackChanged hook above. No global config needed; set behaviour vars here.
+-- PackChanged hook above; :MarkdownPreviewRebuild re-runs it on demand.
 vim.g.mkdp_auto_close = 1
 vim.g.mkdp_theme = "dark"
+vim.api.nvim_create_user_command("MarkdownPreviewRebuild", function()
+  local app = vim.fn.stdpath("data") .. "/site/pack/core/opt/markdown-preview.nvim/app"
+  vim.notify("Rebuilding markdown-preview…", vim.log.levels.INFO)
+  vim.fn.jobstart({ "npx", "--yes", "yarn", "install" }, {
+    cwd = app,
+    on_exit = function(_, code)
+      vim.schedule(function()
+        vim.notify("markdown-preview build " .. (code == 0 and "done ✓" or "failed"), vim.log.levels.INFO)
+      end)
+    end,
+  })
+end, { desc = "Rebuild markdown-preview server deps" })
+
+-- Markdown keymaps (only meaningful in markdown buffers).
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "markdown",
+  callback = function(ev)
+    local opts = { buffer = ev.buf, silent = true }
+    vim.keymap.set("n", "<leader>mp", "<cmd>MarkdownPreview<cr>", vim.tbl_extend("force", opts, { desc = "Markdown preview (browser)" }))
+    vim.keymap.set("n", "<leader>ms", "<cmd>MarkdownPreviewStop<cr>", vim.tbl_extend("force", opts, { desc = "Markdown preview stop" }))
+    vim.keymap.set("n", "<leader>mt", "<cmd>MarkdownPreviewToggle<cr>", vim.tbl_extend("force", opts, { desc = "Markdown preview toggle" }))
+    vim.keymap.set("n", "<leader>mr", "<cmd>RenderMarkdown toggle<cr>", vim.tbl_extend("force", opts, { desc = "Render-markdown toggle" }))
+  end,
+})
 
 -- neotest + vitest -----------------------------------------------------------
 require("neotest").setup({
