@@ -1,0 +1,4 @@
+# Runtime/state dirs are under ~/.local/share/nvim-standalone, not here.
+# Nothing in the config tree is generated, but keep a few scratch patterns out.
+*.log
+.repro
