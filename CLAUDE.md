@@ -15,7 +15,7 @@ Two stow layouts are used:
    Each app is a flat subdir (no `.config/<app>` nesting): `config/<app>/...`. Stowed
    with `stow -t ~/.config config`, so `config/ghostty/config` → `~/.config/ghostty/config`
    and `config/starship.toml` → `~/.config/starship.toml`. Apps inside `config/`:
-   aerospace, alacritty, ghostty, helix, linearmouse, mise, nvim, nvim-new, sketchybar,
+   aerospace, alacritty, ghostty, helix, linearmouse, mise, nvim, sketchybar,
    skhd, yabai, yazi, zed, zellij, plus the loose starship.toml.
 
 2. **Home-dir packages** — one stow package each, targeting `~` directly:
@@ -24,9 +24,7 @@ Two stow layouts are used:
    - **tmux/**: `tmux/.tmux.conf` → `~/.tmux.conf`
    - **zsh/**: `zsh/.zshrc`, `zsh/.zsh/` → `~/`
 
-Non-stow dirs: **cursor/** (macOS Application Support + install scripts), **venv/** (a
-committed Python virtualenv). Top-level docs/scripts like `nvim/PLUGIN_MIGRATION_PLAN.md`
-and `nvim-new/install.sh` stay in their app dirs and are not stowed.
+Non-stow dirs: **cursor/** (macOS Application Support + install scripts).
 
 Per-app notes:
 - **aerospace/**: Window manager configuration (aerospace.toml)
