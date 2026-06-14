@@ -217,16 +217,16 @@
       }
     }
   },
+  "spinnerTipsEnabled": false,
   "alwaysThinkingEnabled": false,
+  "effortLevel": "high",
   "awaySummaryEnabled": false,
   "autoUpdatesChannel": "latest",
+  "tui": "default",
+  "prefersReducedMotion": true,
   "skipDangerousModePermissionPrompt": true,
   "editorMode": "vim",
   "preferredNotifChannel": "ghostty",
   "skipAutoPermissionPrompt": true,
-  "voiceEnabled": true,
-  "effortLevel": "medium",
-  "spinnerTipsEnabled": false,
-  "prefersReducedMotion": true,
-  "tui": "default"
+  "voiceEnabled": true
 }
