@@ -1,0 +1,20 @@
+{
+  "lastChangelogVersion": "0.79.3",
+  "defaultProvider": "together",
+  "defaultModel": "MiniMaxAI/MiniMax-M3",
+  "packages": [
+    "npm:pi-subagents",
+    "npm:pi-web-access"
+  ],
+  "defaultThinkingLevel": "high",
+  "enabledModels": [
+    "together/moonshotai/Kimi-K2.6",
+    "together/MiniMaxAI/MiniMax-M3",
+    "together/Qwen/Qwen2.5-7B-Instruct-Turbo",
+    "together/Qwen/Qwen3.6-Plus",
+    "together/deepseek-ai/DeepSeek-V4-Pro",
+    "together/zai-org/GLM-5.1",
+    "anthropic/claude-opus-4-8"
+  ],
+  "hideThinkingBlock": false
+}

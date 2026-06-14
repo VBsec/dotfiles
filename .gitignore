@@ -173,6 +173,19 @@ claude/.claude/m365-admin*.pem
 claude/.claude/m365-admin*.key
 claude/.claude/security_warnings_*.json
 
+# Pi agent (~/.pi)
+# Same whitelist approach as Claude Code: ignore runtime/state, keep only config.
+pi/.pi/agent/*
+!pi/.pi/agent/settings.json
+!pi/.pi/agent/models.json
+!pi/.pi/agent/extensions/
+!pi/.pi/agent/skills/
+# npm/ is an agent-managed install dir (node_modules + lockfile) — runtime, not config
+# Secrets / machine-local state (defensive — covered by the * above too)
+pi/.pi/agent/auth.json
+pi/.pi/agent/trust.json
+pi/.pi/agent/sessions/
+
 # Yazi
 yazi/.config/yazi/flavors/*.yazi
 

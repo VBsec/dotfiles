@@ -1,0 +1,64 @@
+{
+	"providers": {
+		"together": {
+			"modelOverrides": {
+				"moonshotai/Kimi-K2.6": {
+					"maxTokens": 131072,
+					"thinkingLevelMap": {
+						"minimal": null,
+						"low": null,
+						"medium": null,
+						"xhigh": null
+					}
+				},
+				"MiniMaxAI/MiniMax-M3": {
+					"maxTokens": 250000,
+					"thinkingLevelMap": {
+						"off": null,
+						"minimal": null,
+						"low": null,
+						"medium": null,
+						"xhigh": null
+					}
+				},
+				"Qwen/Qwen2.5-7B-Instruct-Turbo": {
+					"maxTokens": 32768
+				},
+				"Qwen/Qwen3.6-Plus": {
+					"maxTokens": 500000,
+					"thinkingLevelMap": {
+						"minimal": null,
+						"low": null,
+						"medium": null,
+						"xhigh": null
+					}
+				},
+				"deepseek-ai/DeepSeek-V4-Pro": {
+					"maxTokens": 384000,
+					"thinkingLevelMap": {
+						"minimal": null,
+						"low": null,
+						"medium": null,
+						"xhigh": null
+					}
+				},
+				"zai-org/GLM-5.1": {
+					"maxTokens": 131072,
+					"thinkingLevelMap": {
+						"minimal": null,
+						"low": null,
+						"medium": null,
+						"xhigh": null
+					}
+				}
+			}
+		},
+		"anthropic": {
+			"modelOverrides": {
+				"claude-opus-4-8": {
+					"maxTokens": 128000
+				}
+			}
+		}
+	}
+}
