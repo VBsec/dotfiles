@@ -201,7 +201,8 @@
     "notion@claude-plugins-official": true,
     "obsidian@obsidian-skills": true,
     "marp@marp-mcp": true,
-    "linear@claude-plugins-official": true
+    "linear@claude-plugins-official": true,
+    "pyright-lsp@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "obsidian-skills": {

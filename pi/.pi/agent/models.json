@@ -53,6 +53,43 @@
 				}
 			}
 		},
+		"mistral": {
+			"modelOverrides": {
+				"mistral-medium-2604": {
+					"maxTokens": 262100,
+					"thinkingLevelMap": {
+						"minimal": null,
+						"low": null,
+						"medium": null,
+						"xhigh": null
+					}
+				},
+				"mistral-large-2512": {
+					"maxTokens": 262100
+				},
+				"magistral-medium-latest": {
+					"maxTokens": 16400,
+					"thinkingLevelMap": {
+						"minimal": null,
+						"low": null,
+						"medium": null,
+						"xhigh": null
+					}
+				},
+				"devstral-medium-latest": {
+					"maxTokens": 262100
+				},
+				"mistral-small-2603": {
+					"maxTokens": 256000,
+					"thinkingLevelMap": {
+						"minimal": null,
+						"low": null,
+						"medium": null,
+						"xhigh": null
+					}
+				}
+			}
+		},
 		"anthropic": {
 			"modelOverrides": {
 				"claude-opus-4-8": {

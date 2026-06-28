@@ -176,6 +176,20 @@ if type brew &>/dev/null; then
   FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
 fi
 
+# GitButler (but) completions — cache to a file in fpath instead of eval'ing
+# the Tauri binary on every shell start. Regenerated only when missing.
+# Cached under ~/.cache (not ~/.zsh, which is stow-managed in the dotfiles repo).
+# (~/.local/bin is already on PATH via the path=() array above.)
+if command -v but >/dev/null 2>&1; then
+  _but_comp="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/completions/_but"
+  if [[ ! -f $_but_comp ]]; then
+    mkdir -p "${_but_comp:h}"
+    but completions zsh >| "$_but_comp" 2>/dev/null
+  fi
+  fpath=("${_but_comp:h}" $fpath)
+  unset _but_comp
+fi
+
 # Basic completion (fast, built-in)
 autoload -Uz compinit
 # Only check for new completions once a day
@@ -682,3 +696,6 @@ pi() {
     fi
     command pi "$@"
 }
+
+# Vite+ bin (https://viteplus.dev)
+. "$HOME/.vite-plus/env"

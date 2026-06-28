@@ -1,5 +1,5 @@
 {
-  "lastChangelogVersion": "0.79.3",
+  "lastChangelogVersion": "0.79.8",
   "defaultProvider": "together",
   "defaultModel": "MiniMaxAI/MiniMax-M3",
   "packages": [
@@ -16,5 +16,6 @@
     "together/zai-org/GLM-5.1",
     "anthropic/claude-opus-4-8"
   ],
-  "hideThinkingBlock": false
+  "hideThinkingBlock": false,
+  "theme": "dark"
 }
