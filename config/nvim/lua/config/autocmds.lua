@@ -1,12 +1,7 @@
--- Autocmds are automatically loaded on the VeryLazy event
--- Default autocmds that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/autocmds.lua
---
--- Add any additional autocmds here
--- with `vim.api.nvim_create_autocmd`
---
--- Or remove existing autocmds by their group name (which is prefixed with `lazyvim_` for the defaults)
--- e.g. vim.api.nvim_del_augroup_by_name("lazyvim_wrap_spell")
--- Disable spell for markdown (and other prose files in VSCode)
+-- Autocmds (ported from the old config).
+
+-- Disable spell checking for prose filetypes. In VSCode, cover the broader set;
+-- in native Neovim only markdown (LazyVim used to enable spell elsewhere).
 if vim.g.vscode then
   vim.api.nvim_create_autocmd("FileType", {
     pattern = { "text", "plaintex", "typst", "gitcommit", "markdown" },
@@ -23,8 +18,13 @@ else
   })
 end
 
--- Force-stop LSP clients before exit to prevent "quit with exit code" errors
--- (Taplo and others don't handle async shutdown gracefully, causing a race condition)
+if vim.g.vscode then
+  return
+end
+
+-- Native Neovim only below ----------------------------------------------------
+
+-- Force-stop LSP clients before exit to avoid async-shutdown races on quit.
 vim.api.nvim_create_autocmd("VimLeavePre", {
   callback = function()
     for _, client in ipairs(vim.lsp.get_clients()) do
@@ -33,13 +33,22 @@ vim.api.nvim_create_autocmd("VimLeavePre", {
   end,
 })
 
--- Open snacks picker when starting nvim with a directory
+-- Open the smart picker when nvim is started on a directory.
 vim.api.nvim_create_autocmd("VimEnter", {
   callback = function()
     local arg = vim.fn.argv(0)
-    if vim.fn.isdirectory(arg) == 1 then
-      vim.cmd("cd " .. arg)
-      Snacks.picker.smart()
+    if type(arg) == "string" and arg ~= "" and vim.fn.isdirectory(arg) == 1 then
+      vim.cmd("cd " .. vim.fn.fnameescape(arg))
+      if Snacks and Snacks.picker then
+        Snacks.picker.smart()
+      end
     end
+  end,
+})
+
+-- Highlight on yank (small native nicety).
+vim.api.nvim_create_autocmd("TextYankPost", {
+  callback = function()
+    vim.hl.on_yank()
   end,
 })

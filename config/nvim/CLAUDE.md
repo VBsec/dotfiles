@@ -1,69 +1,77 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Guidance for Claude Code when working in this Neovim configuration.
 
-## Repository Overview
+## Overview
 
-This is a Neovim configuration based on LazyVim that supports both standalone Neovim and VS Code integration through the VSCode Neovim extension. The configuration automatically detects the environment (vim.g.vscode) and loads appropriate settings.
+Standalone Neovim config built on **Neovim 0.12 natives** — no LazyVim, no lazy.nvim.
+This is the **default** Neovim config (launch with plain `nvim`). It replaced the previous
+LazyVim config, which is preserved at `../nvim-old/` and still runs side-by-side via
+`NVIM_APPNAME`:
 
+```bash
+nvim                              # this config (default)
+NVIM_APPNAME=nvim-old nvim        # the old LazyVim config, or the `nvs` alias (zsh/.zshrc)
+```
+
+`NVIM_APPNAME` isolates each config's data, state, and plugins. The old config
+(`~/.config/nvim-old`, data under `~/.local/share/nvim-old`) is kept for reference and
+should not be modified.
 
 ## Architecture
 
-### Core Structure
-- **init.lua**: Entry point that detects environment (VSCode vs native Neovim) and loads appropriate configurations
-- **lua/config/**: Core configuration files
-  - `lazy.lua`: Plugin manager setup using lazy.nvim
-  - `keymaps.lua`: Keybindings with separate mappings for VSCode and native Neovim
-  - `options.lua`: Vim options configuration
-  - `autocmds.lua`: Auto commands
-- **lua/plugins/**: Individual plugin configurations (one file per plugin/feature)
-- **lazyvim.json**: LazyVim extras configuration defining enabled language support and features
+- **Plugin manager**: native `vim.pack` (`lua/config/plugins.lua`). Plugins are added with
+  `vim.pack.add{ {src=...} }`. Build steps run from a `PackChanged` autocmd. Update with
+  `:lua vim.pack.update()`.
+- **LSP**: native `vim.lsp.config` — one file per server in `lsp/<name>.lua`, enabled in
+  `init.lua` via `vim.lsp.enable{...}`. No nvim-lspconfig.
+- **Completion**: blink.cmp (primary), native `vim.lsp.completion` as fallback.
+- **Formatting**: conform.nvim — biome (ts/js/json), dprint (md/yaml/toml/dockerfile/html/css),
+  clang_format (c/cpp), ruff_format (python), stylua (lua). Format-on-save on.
+- **Project-local config**: native `exrc` (`vim.o.exrc`). Trusted `.nvim.lua`/`.nvimrc`/`.exrc`
+  in cwd; nvim prompts to trust via `vim.secure`.
+- **VSCode**: `init.lua`, `config/keymaps.lua`, `config/plugins.lua`, `config/autocmds.lua` all
+  branch on `vim.g.vscode`. In VSCode only editing plugins + VSCode keymaps load; LSP/UI/cmp are
+  skipped (VSCode owns them).
 
-### Key Features
-- Dual-mode support: Works in both standalone Neovim and as VSCode extension
-- LazyVim framework with extensive extras for multiple languages (TypeScript, Python, Rust, Go, etc.)
-- Custom plugin configurations for enhanced editing experience
-- VSCode-specific keybindings and integrations when running inside VSCode
-- Fzf-lua is used instead of Telescope
+## File layout
 
-## Common Development Tasks
+- `init.lua` — leader, PATH, requires, `vim.lsp.enable`, diagnostics, highlights.
+- `lua/config/options.lua` — editor options + filetype maps + root_spec + exrc.
+- `lua/config/defaults.lua` — sensible default keymaps ported from LazyVim
+  (window/buffer nav, save, search centering, splits, quickfix, etc.).
+- `lua/config/keymaps.lua` — custom textEditing / neovim / vscode keymap groups.
+- `lua/config/autocmds.lua` — spell-off, LSP shutdown, dir picker, yank highlight.
+- `lua/config/plugins.lua` — all `vim.pack.add` + plugin setup + plugin keymaps + LspAttach.
+- `lsp/*.lua` — per-server native LSP configs.
+- `after/ftplugin/json.lua` — JSON `// ` commentstring.
 
-### Plugin Management
-```bash
-# Open Neovim and use:
-:Lazy             # Open plugin manager UI
-:Lazy update      # Update all plugins
-:Lazy sync        # Sync plugin state with lockfile
+## Tooling
+
+All language servers/formatters come from **mise** (`../mise/config.toml`), except clangd /
+clang-format which come from Homebrew LLVM (`/opt/homebrew/opt/llvm/bin`). PATH is prefixed with
+mise shims in `init.lua`. Binary names: `basedpyright-langserver`, `tailwindcss-language-server`,
+`vscode-{css,html,json}-language-server`, `lua-language-server`, `vtsls`,
+`biome`, `dprint`.
+
+## Languages supported
+
+TypeScript/JS/JSON (biome + vtsls + tailwind, vitest via neotest), Python (basedpyright + ruff),
+C (clangd, per-repo `.clangd` does target tuning), HTML/CSS, Markdown (render-markdown +
+treesitter folding + markdown-preview browser server; **no linting/diagnostics**), and
+dprint-formatted yaml/toml/dockerfile.
+
+Intentionally NOT included (removed from the LazyVim config): Go, Java, Kotlin, Rust, Terraform,
+SQL/dadbod, leetcode, harpoon, yanky, dial, smear-cursor, flash, trouble. Re-add by appending to
+`vim.pack.add` and configuring in `plugins.lua` if needed.
+
+## Common tasks
+
+```vim
+:lua vim.pack.update()     " update plugins (review buffer, :w to confirm)
+:lua =vim.pack.get()       " list installed plugins
+:checkhealth               " general health
+:checkhealth vim.pack      " plugin manager health
+:lua =vim.lsp.get_clients() " attached LSP clients
+:TSUpdate                  " update treesitter parsers
 ```
-
-### Health Check
-```bash
-nvim
-:checkhealth      # Check Neovim and plugin health
-```
-
-### Configuration Locations
-- Add new plugins: Create a new file in `lua/plugins/`. Use existing files where appropriate.
-- Modify keybindings: Edit `lua/config/keymaps.lua`
-- Add LazyVim extras: Edit `lazyvim.json`
-- LazyVim and plugin/extra configs are in ~/.local/share/nvim/
-
-## VS Code Integration
-
-When running inside VS Code:
-- Special keybindings activate VS Code commands instead of Neovim features
-- Bookmarks integration with VS Code Bookmarks extension
-- Multi-cursor support via `vscode-multi-cursor` plugin
-- File explorer and symbol navigation use VS Code's native UI
-
-Required VS Code extensions listed in README.md:
-- VS Code Neovim
-- Neovim UI Modifier
-- Bookmarks
-
-## Important Notes
-
-- No Makefile or package.json exists - this is a pure Neovim configuration
-- Plugin updates are managed through lazy.nvim's lockfile (`lazy-lock.json`)
-- Environment detection happens in init.lua:2-61 to load appropriate configurations
-- Before adding or editing keymaps or plugins, always perform a search for existing ones in both this directory as well as ~/.local/share/nvim/

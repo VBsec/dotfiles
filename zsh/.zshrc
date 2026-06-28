@@ -30,7 +30,7 @@ path=(
 # INSTANT - Fast Aliases (no external commands)
 # ============================================================================
 alias v=nvim
-alias nvs="NVIM_APPNAME=nvim-standalone nvim"
+alias nvs="NVIM_APPNAME=nvim-old nvim"   # old LazyVim config (default nvim is now the standalone one)
 alias py=python
 alias p=pnpm
 alias lg=lazygit

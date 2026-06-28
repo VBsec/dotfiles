@@ -1,28 +1,23 @@
--- Keymaps are automatically loaded on the VeryLazy event
--- Default keymaps that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua
--- Add any additional keymaps here
+-- Keymaps. Split into:
+--   textEditingMappings() -- active everywhere (terminal + VSCode)
+--   neovimMappings()      -- native Neovim only
+--   vscodeMappings()      -- VSCode-Neovim extension only
+--
+-- LSP keymaps live in config.plugins (LspAttach) so they only bind when a
+-- server attaches. VSCode provides its own LSP, so those are skipped there.
+
+-- Plain wrapper around vim.keymap.set (no plugin dependency).
 local function map(mode, lhs, rhs, opts)
-  local keys = require("lazy.core.handler").handlers.keys
-  ---@cast keys LazyKeysHandler
-  -- do not create the keymap if a lazy keys handler exists
-  if not keys.active[keys.parse({ lhs, mode = mode }).id] then
-    opts = opts or {}
-    opts.silent = opts.silent ~= false
-    if opts.remap and not vim.g.vscode then
-      opts.remap = nil
-    end
-    vim.keymap.set(mode, lhs, rhs, opts)
+  opts = opts or {}
+  if opts.silent == nil then
+    opts.silent = true
   end
+  vim.keymap.set(mode, lhs, rhs, opts)
 end
 
 local function ToggleWordWrap()
-  if vim.wo.wrap then
-    vim.wo.wrap = false
-    print("Word wrap disabled")
-  else
-    vim.wo.wrap = true
-    print("Word wrap enabled")
-  end
+  vim.wo.wrap = not vim.wo.wrap
+  print(vim.wo.wrap and "Word wrap enabled" or "Word wrap disabled")
 end
 
 local function copyToClipBoard()
@@ -36,56 +31,70 @@ local function callVSCodeFunction(vsCodeCommand)
   vim.cmd(vsCodeCommand)
 end
 
+-- Select-all + clipboard copy (both environments).
 map("i", "<C-a>", function()
   vim.cmd("norm! ggVG")
   print("Selected all lines")
-end, { remap = false, desc = "select all lines in buffer" })
+end, { remap = false, desc = "Select all lines in buffer" })
 map({ "v", "i" }, "<D-c>", function()
   copyToClipBoard()
-end, { remap = false, desc = "copy selected text" })
--- map("i", "<BS>", "<cmd>norm! de<CR>", { noremap = true, desc = "delete next word to right" })
--- map("i", "<C-l>", "<Del>", { remap = true, desc = "delete one character backward" })
+end, { remap = false, desc = "Copy selected text" })
+
+-- Native-Neovim-only mappings.
 local function neovimMappings()
+  -- VSCode-Ctrl+D-style: replace word under cursor everywhere via :cgn.
   map("i", "<C-d>", function()
     local new_text = vim.fn.input("Replace with?: ")
-    local cmd = "normal! *Ncgn" .. new_text
-    vim.cmd(cmd)
-  end, { desc = "ctrl+d vs code alternative" })
+    vim.cmd("normal! *Ncgn" .. new_text)
+  end, { desc = "Replace word under cursor (Ctrl+D alt)" })
 
-  map("i", "<C-f>", "<Esc>/", { noremap = false })
-  map("i", "jj", "<Esc>", { noremap = false })
+  map("i", "<C-f>", "<Esc>/", { remap = true })
+  map("i", "jj", "<Esc>", { remap = true })
 
-  -- Map leader+jj to quit Neovim
-  map("n", "<leader>jj", "<cmd>qa<CR>", { noremap = true, desc = "Quit Neovim" })
+  map("n", "<leader>jj", "<cmd>qa<CR>", { desc = "Quit Neovim" })
+  map("n", "<leader>ct", ToggleWordWrap, { desc = "Toggle word wrap" })
+  map("n", "<leader>bc", "<cmd>BufferLinePick<CR>", { desc = "Pick buffer" })
 
-  -- Map a keybinding to toggle word wrap
-  map("n", "<leader>ct", function()
-    ToggleWordWrap()
-  end, { noremap = true, silent = true, desc = "toggle word wrap" })
-  map("n", "<leader>bc", "<cmd>BufferLinePick<CR>", { noremap = false, silent = true, desc = "pick buffer" })
-  -- force/replace already used keymaps
-  map("n", "<leader>cs", "<cmd>AerialNavOpen<CR>", { noremap = true, silent = true, desc = "Symbols Outline(Aerial)" })
-  map("n", "<leader>ch", "<cmd>Ouroboros<CR>", { noremap = false, desc = "Switch header/source" })
+  -- Symbols outline via snacks picker.
+  map("n", "<leader>cs", function()
+    Snacks.picker.lsp_symbols()
+  end, { desc = "Document symbols" })
 
-  -- Copy file paths to clipboard (yank paths)
+  -- Switch C/C++ header <-> source via clangd (native, no plugin).
+  map("n", "<leader>ch", function()
+    local params = { uri = vim.uri_from_bufnr(0) }
+    local clients = vim.lsp.get_clients({ bufnr = 0, name = "clangd" })
+    if #clients == 0 then
+      vim.notify("clangd not attached", vim.log.levels.WARN)
+      return
+    end
+    clients[1]:request("textDocument/switchSourceHeader", params, function(err, result)
+      if err or not result then
+        vim.notify("No corresponding header/source", vim.log.levels.WARN)
+        return
+      end
+      vim.cmd.edit(vim.uri_to_fname(result))
+    end, 0)
+  end, { desc = "Switch header/source (clangd)" })
+
+  -- Yank file paths.
   map("n", "<leader>yP", function()
     local path = vim.fn.expand("%:p")
     vim.fn.setreg("+", path)
     print("Copied: " .. path)
   end, { desc = "Yank absolute path" })
-
   map("n", "<leader>yp", function()
     local path = vim.fn.expand("%:.")
     vim.fn.setreg("+", path)
     print("Copied: " .. path)
   end, { desc = "Yank relative path" })
-
   map("n", "<leader>yf", function()
     local path = vim.fn.expand("%:t")
     vim.fn.setreg("+", path)
     print("Copied: " .. path)
   end, { desc = "Yank filename" })
-  map("n", "<leader>cj", '<cmd>lua require"jester".run()<CR>', { noremap = false, desc = "Run Jest case under cursor" })
+
+  -- Oil file manager.
   map("n", "-", "<CMD>Oil --float .<CR>", { desc = "Oil to cwd" })
   map("n", "<leader>-", function()
     local open_buf = vim.api.nvim_buf_get_name(0)
@@ -94,138 +103,116 @@ local function neovimMappings()
   end, { desc = "Oil to current dir" })
 end
 
+-- VSCode-Neovim-extension-only mappings.
 local function vscodeMappings()
   map("i", "tab", function()
     callVSCodeFunction("editor.action.inlineSuggest.commit")
-  end, { noremap = true, silent = true, desc = "Accept next suggestion" })
+  end, { remap = false, desc = "Accept next suggestion" })
 
   map({ "n", "x", "i" }, "<D-d>", function()
     require("vscode-multi-cursor").addSelectionToNextFindMatch()
   end)
+
   map("n", "<leader>cs", function()
-    print("go to symbols in editor")
     callVSCodeFunction("call VSCodeCall('workbench.action.gotoSymbol')")
-  end, { noremap = true, silent = true, desc = "go to symbols in editor" })
+  end, { desc = "Go to symbols in editor" })
 
   map("n", "<S-l>", function()
     callVSCodeFunction("call VSCodeNotify('workbench.action.nextEditor')")
-  end, { noremap = true, desc = "switch between editor to next" })
-
+  end, { desc = "Next editor" })
   map("n", "<S-h>", function()
     callVSCodeFunction("call VSCodeNotify('workbench.action.previousEditor')")
-  end, { noremap = true, desc = "switch between editor to previous" })
+  end, { desc = "Previous editor" })
 
   map("n", "gr", function()
     callVSCodeFunction("call VSCodeNotify('editor.action.referenceSearch.trigger')")
-  end, { noremap = true, desc = "peek references inside vs code" })
-
+  end, { desc = "Peek references" })
   map("n", "<leader>cp", function()
     callVSCodeFunction("call VSCodeNotify('editor.action.triggerParameterHints')")
-  end, { noremap = true, desc = "peek references inside vs code" })
-
+  end, { desc = "Trigger parameter hints" })
   map("n", "<leader>sd", function()
     callVSCodeFunction("call VSCodeNotify('workbench.action.problems.focus')")
-  end, { noremap = true, desc = "open problems and errors infos" })
+  end, { desc = "Focus problems" })
 
   map("n", "<leader>e", function()
     callVSCodeFunction("call VSCodeNotify('workbench.files.action.focusFilesExplorer')")
-  end, { noremap = true, desc = "focus to file explorer" })
-
+  end, { desc = "Focus file explorer" })
   map("n", "<leader>fe", function()
     callVSCodeFunction("call VSCodeNotify('workbench.files.action.focusFilesExplorer')")
-  end, { noremap = true, desc = "focus to file explorer" })
-
+  end, { desc = "Focus file explorer" })
   map("n", "<leader>ff", function()
     callVSCodeFunction("call VSCodeNotify('workbench.action.quickOpen')")
-  end, { noremap = true, desc = "open files" })
-
+  end, { desc = "Quick open files" })
   map("n", "<leader>fs", function()
     callVSCodeFunction("call VSCodeNotify('periscope.search')")
-  end, { noremap = true, desc = "search files" })
+  end, { desc = "Search files" })
 
   map("n", "<leader>gg", function()
     callVSCodeFunction("call VSCodeNotify('workbench.view.scm')")
-  end, { noremap = true, desc = "open git source control" })
+  end, { desc = "Open source control" })
 
+  -- Bookmarks (VS Code Bookmarks extension).
   map("n", "<leader>sml", function()
     callVSCodeFunction("call VSCodeNotify('bookmarks.list')")
-  end, { noremap = true, desc = "open bookmarks list for current files" })
-
+  end, { desc = "Bookmarks list (file)" })
   map("n", "<leader>smL", function()
     callVSCodeFunction("call VSCodeNotify('bookmarks.listFromAllFiles')")
-  end, { noremap = true, desc = "open bookmarks list for all files" })
-
+  end, { desc = "Bookmarks list (all)" })
   map("n", "<leader>smm", function()
     callVSCodeFunction("call VSCodeNotify('bookmarks.toggle')")
-  end, { noremap = true, desc = "toggle bookmarks" })
-
+  end, { desc = "Toggle bookmark" })
   map("n", "<leader>smn", function()
     callVSCodeFunction("call VSCodeNotify('bookmarks.jumpToNext')")
-  end, { noremap = true, desc = "next bookmark" })
-
+  end, { desc = "Next bookmark" })
   map("n", "<leader>smp", function()
     callVSCodeFunction("call VSCodeNotify('bookmarks.jumpToPrevious')")
-  end, { noremap = true, desc = "previous bookmark" })
-
+  end, { desc = "Previous bookmark" })
   map("n", "<leader>smd", function()
     callVSCodeFunction("call VSCodeNotify('bookmarks.clear')")
-  end, { noremap = true, desc = "clear bookmarks from current file" })
-
+  end, { desc = "Clear bookmarks (file)" })
   map("n", "<leader>smr", function()
     callVSCodeFunction("call VSCodeNotify('bookmarks.clearFromAllFiles')")
-  end, { noremap = true, desc = "clear bookmarks from all file" })
+  end, { desc = "Clear bookmarks (all)" })
 
   map("n", "<leader>cr", function()
     callVSCodeFunction("call VSCodeNotify('editor.action.rename')")
-  end, { noremap = true, desc = "rename symbol" })
-
+  end, { desc = "Rename symbol" })
   map("n", "<leader>ca", function()
     callVSCodeFunction("call VSCodeNotify('editor.action.quickFix')")
-  end, { noremap = true, desc = "open quick fix in vs code" })
-
+  end, { desc = "Quick fix" })
   map("n", "<leader>cA", function()
     callVSCodeFunction("call VSCodeNotify('editor.action.sourceAction')")
-  end, { noremap = true, desc = "open source Action in vs code" })
-
+  end, { desc = "Source action" })
   map("n", "<leader>ce", function()
     callVSCodeFunction("call VSCodeNotify('workbench.panel.markers.view.focus')")
-  end, { noremap = true, desc = "open problems diagnostics" })
-
+  end, { desc = "Open problems" })
   map("n", "<leader>cd", function()
     callVSCodeFunction("call VSCodeNotify('editor.action.marker.next')")
-  end, { noremap = true, desc = "open problems diagnostics" })
+  end, { desc = "Next diagnostic" })
 
   map({ "v" }, "<D-c>", function()
     callVSCodeFunction("call VSCodeNotify('editor.action.clipboardCopyAction')")
     print("📎")
-  end, { noremap = true, desc = "copy text/add text to clipboard" })
+  end, { desc = "Copy to clipboard" })
 end
 
--- Text editing shortcuts (work in both VSCode and native Neovim)
+-- Quick end-of-line edits + line moves (both environments).
 local function textEditingMappings()
-  -- Normal mode shortcuts for quick end-of-line edits
-  map("n", "g;", "A;<Esc>", { desc = "Add semicolon at end of line" })
-  map("n", "g,", "A,<Esc>", { desc = "Add comma at end of line" })
-  map("n", "g.", "A.<Esc>", { desc = "Add period at end of line" })
-  map("n", "g:", "A:<Esc>", { desc = "Add colon at end of line" })
+  map("n", "g;", "A;<Esc>", { desc = "Add semicolon at EOL" })
+  map("n", "g,", "A,<Esc>", { desc = "Add comma at EOL" })
+  map("n", "g.", "A.<Esc>", { desc = "Add period at EOL" })
+  map("n", "g:", "A:<Esc>", { desc = "Add colon at EOL" })
+  map("n", "g)", "A)<Esc>", { desc = "Add ) at EOL" })
+  map("n", "g]", "A]<Esc>", { desc = "Add ] at EOL" })
+  map("n", "g}", "A}<Esc>", { desc = "Add } at EOL" })
 
-  -- Quick brackets/quotes at end of line
-  map("n", "g)", "A)<Esc>", { desc = "Add ) at end of line" })
-  map("n", "g]", "A]<Esc>", { desc = "Add ] at end of line" })
-  map("n", "g}", "A}<Esc>", { desc = "Add } at end of line" })
-
-  -- Move lines up/down (Ctrl+Cmd+j/k) - replaces Alt+j/k to free Option for Scandinavian compose
-  -- Delete LazyVim defaults first
-  vim.keymap.del({ "n", "i", "v" }, "<A-j>")
-  vim.keymap.del({ "n", "i", "v" }, "<A-k>")
-  -- Use Ctrl+Cmd directly (Ghostty passes through with unbind)
-  vim.keymap.set("n", "<C-D-j>", "<cmd>m .+1<cr>==", { desc = "Move line down" })
-  vim.keymap.set("n", "<C-D-k>", "<cmd>m .-2<cr>==", { desc = "Move line up" })
-  vim.keymap.set("v", "<C-D-j>", ":m '>+1<cr>gv=gv", { desc = "Move selection down" })
-  vim.keymap.set("v", "<C-D-k>", ":m '<-2<cr>gv=gv", { desc = "Move selection up" })
+  -- Move lines with Ctrl+Cmd+j/k (frees Option for Scandinavian compose).
+  map("n", "<C-D-j>", "<cmd>m .+1<cr>==", { desc = "Move line down" })
+  map("n", "<C-D-k>", "<cmd>m .-2<cr>==", { desc = "Move line up" })
+  map("v", "<C-D-j>", ":m '>+1<cr>gv=gv", { desc = "Move selection down" })
+  map("v", "<C-D-k>", ":m '<-2<cr>gv=gv", { desc = "Move selection up" })
 end
 
--- Apply text editing mappings to both environments
 textEditingMappings()
 
 if vim.g.vscode then
