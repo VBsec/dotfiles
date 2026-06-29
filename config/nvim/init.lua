@@ -41,6 +41,7 @@ vim.lsp.enable({
   "lua_ls",
   "bashls",
   "marksman",
+  "taplo",
 })
 
 -- Diagnostics presentation (ported from the LazyVim-era options/lsp config).
