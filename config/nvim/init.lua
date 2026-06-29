@@ -40,6 +40,7 @@ vim.lsp.enable({
   "jsonls",
   "lua_ls",
   "bashls",
+  "marksman",
 })
 
 -- Diagnostics presentation (ported from the LazyVim-era options/lsp config).
