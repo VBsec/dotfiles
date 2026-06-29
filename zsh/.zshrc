@@ -638,6 +638,22 @@ alias gst='git status'
 alias wsc='wt switch --create -x claude'
 alias wso='wt switch --create -x opencode'
 
+# Done with a branch whose PR was merged elsewhere: switch to the default
+# branch, pull, then delete the old local branch. Usage: gdone [branch]
+# (defaults to the current branch).
+gdone() {
+  local def branch
+  def=$(git symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null)
+  def=${def#origin/}
+  def=${def:-main}
+  branch=${1:-$(git rev-parse --abbrev-ref HEAD)}
+  if [[ "$branch" == "$def" ]]; then
+    echo "gdone: already on '$def'; nothing to delete" >&2
+    return 1
+  fi
+  git switch "$def" && git pull --prune && git branch -D "$branch"
+}
+
 # Open buffer line in editor
 autoload -Uz edit-command-line
 zle -N edit-command-line
