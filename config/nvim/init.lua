@@ -42,6 +42,7 @@ vim.lsp.enable({
   "bashls",
   "marksman",
   "taplo",
+  "yamlls",
 })
 
 -- Diagnostics presentation (ported from the LazyVim-era options/lsp config).
