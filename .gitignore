@@ -196,6 +196,9 @@ config/zed/prompts/*.mdb
 # Ghostty
 config/ghostty/themes/
 
+# Karabiner — automatic_backups/ is regenerated state, not config
+config/karabiner/automatic_backups/
+
 # ============================================================================
 # Secrets and Credentials
 # ============================================================================
