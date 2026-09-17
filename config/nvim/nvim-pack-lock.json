@@ -13,6 +13,10 @@
       "rev": "619363c30309d29ffa631e67c8183f2a72caa373",
       "src": "https://github.com/stevearc/conform.nvim"
     },
+    "cursortab.nvim": {
+      "rev": "9fc9b9961e0fad248ae5492c00ee57c333c84a36",
+      "src": "https://github.com/cursortab/cursortab.nvim"
+    },
     "diffview.nvim": {
       "rev": "4516612fe98ff56ae0415a259ff6361a89419b0a",
       "src": "https://github.com/sindrets/diffview.nvim"
@@ -93,6 +97,10 @@
     "vim-visual-multi": {
       "rev": "a6975e7c1ee157615bbc80fc25e4392f71c344d4",
       "src": "https://github.com/mg979/vim-visual-multi"
+    },
+    "vscode-multi-cursor.nvim": {
+      "rev": "210d64a6d190383a81b8dcdf8779d357006f3a69",
+      "src": "https://github.com/vscode-neovim/vscode-multi-cursor.nvim"
     },
     "which-key.nvim": {
       "rev": "3aab2147e74890957785941f0c1ad87d0a44c15a",

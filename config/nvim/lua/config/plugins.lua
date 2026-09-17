@@ -16,6 +16,25 @@ vim.api.nvim_create_autocmd("PackChanged", {
   callback = function(ev)
     local name = ev.data.spec.name
     local kind = ev.data.kind
+    if (kind == "install" or kind == "update") and name == "cursortab.nvim" then
+      -- Build the Go daemon (server/cursortab). Go comes from mise shims (on PATH via init.lua).
+      -- ~/nextedit-setup/build-cursortab.sh applies local patches first (see its header);
+      -- without it, fall back to a plain `go build`.
+      vim.notify("Building cursortab daemon (go build)…", vim.log.levels.INFO)
+      local build_script = vim.env.HOME .. "/nextedit-setup/build-cursortab.sh"
+      local cmd = vim.fn.executable(build_script) == 1 and { build_script, ev.data.path } or { "go", "build" }
+      vim.fn.jobstart(cmd, {
+        cwd = ev.data.path .. "/server",
+        on_exit = function(_, code)
+          vim.schedule(function()
+            vim.notify(
+              "cursortab build " .. (code == 0 and "done ✓ (run :CursortabRestart)" or "failed (exit " .. code .. ")"),
+              code == 0 and vim.log.levels.INFO or vim.log.levels.ERROR
+            )
+          end)
+        end,
+      })
+    end
     if (kind == "install" or kind == "update") and name == "markdown-preview.nvim" then
       vim.notify("Building markdown-preview.nvim…", vim.log.levels.INFO)
       -- Install the preview server deps in the plugin's app/ dir. Use jobstart
@@ -72,6 +91,11 @@ vim.pack.add({
   { src = gh("windwp/nvim-ts-autotag") },
   { src = gh("stevearc/oil.nvim") },
   { src = gh("mg979/vim-visual-multi") },
+
+  -- Next-edit prediction (Cursor-Tab style): Lua UI + Go daemon talking to a
+  -- local llama-server (sweep-next-edit). Setup + build hook below; see
+  -- ~/nextedit-setup/NOTES.md for the server side.
+  { src = gh("cursortab/cursortab.nvim") },
 
   -- Git: gitsigns (in-buffer hunk signs/nav/preview) + diffview (multi-file
   -- review UI; `:DiffviewOpen HEAD` reviews everything since the last commit).
@@ -156,15 +180,26 @@ do
     typescriptreact = "tsx",
     javascriptreact = "javascript",
   }
+  local function ts_attach(buf, ft)
+    local lang = vim.treesitter.language.get_lang(ft) or ft_to_lang[ft] or ft
+    if vim.list_contains(ts_parsers, lang) then
+      pcall(vim.treesitter.start, buf, lang)
+      vim.bo[buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+    end
+  end
   vim.api.nvim_create_autocmd("FileType", {
     callback = function(ev)
-      local lang = vim.treesitter.language.get_lang(ev.match) or ft_to_lang[ev.match] or ev.match
-      if vim.list_contains(ts_parsers, lang) then
-        pcall(vim.treesitter.start, ev.buf, lang)
-        vim.bo[ev.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
-      end
+      ts_attach(ev.buf, ev.match)
     end,
   })
+  -- Buffers already loaded before this autocmd was registered (e.g. the file
+  -- passed on the command line, or a buffer open across a config reload) never
+  -- fire FileType again — attach to them now so highlighting isn't skipped.
+  for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+    if vim.api.nvim_buf_is_loaded(buf) then
+      ts_attach(buf, vim.bo[buf].filetype)
+    end
+  end
 end
 
 -- nvim-ts-autotag (html/jsx tag close/rename).
@@ -460,6 +495,57 @@ require("blink.cmp").setup({
   },
   fuzzy = { implementation = "prefer_rust_with_warning" },
 })
+
+-- cursortab.nvim (next-edit prediction) ---------------------------------------
+-- Talks to the Go daemon, which talks to llama-server (sweep-next-edit-1.5B)
+-- on 127.0.0.1:8000 (launchd agent com.local.llama-server). <Tab> handling:
+-- blink.cmp's <Tab> is buffer-local (set on InsertEnter) and wins while its
+-- menu is open; with the menu closed its `fallback` runs the global insert
+-- <Tab>, which is the wrapper defined right after this setup() (it replaces
+-- cursortab's own global mapping): accept the prediction if one is showing,
+-- else a literal tab. Normal-mode <Tab> stays cursortab's (jump/accept).
+require("cursortab").setup({
+  -- CURSORTAB_LOG_LEVEL=debug nvim … logs full prompts/responses to
+  -- ~/.local/state/nvim/cursortab/cursortab.log (used by the e2e test).
+  log_level = vim.env.CURSORTAB_LOG_LEVEL or "info",
+  provider = {
+    type = "sweep",
+    url = "http://127.0.0.1:8000",
+    max_tokens = 512,          -- also = input window size (tokens) when context_size = 0
+    context_size = 0,
+    completion_timeout = 5000,
+  },
+  keymaps = {
+    accept = "<Tab>",          -- rebound below to cooperate with blink.cmp
+    partial_accept = "<S-Tab>",
+  },
+  behavior = {
+    -- Both 150 (defaults 50): a request the editor cancels mid-flight still
+    -- costs the single llama-server slot ~0.3 s of prompt processing before
+    -- the next request starts (measured: cancel_bench.py in ~/nextedit-setup),
+    -- so firing on every keystroke queues up a burst that the real request
+    -- then waits behind. 150 ms only fires once typing actually pauses.
+    idle_completion_delay = 150,
+    text_change_debounce = 150,
+    max_visible_lines = 12,
+  },
+})
+
+-- <Tab> arbitration: completion menu open → blink accepts; else prediction
+-- showing → cursortab accepts/jumps; else literal <Tab>. Insert mode only;
+-- normal-mode <Tab> is left as cursortab installed it (jump/accept or tab).
+vim.keymap.set("i", "<Tab>", function()
+  local blink = require("blink.cmp")
+  if blink.is_visible() then
+    blink.select_and_accept()
+    return ""
+  end
+  if require("cursortab").accept() then
+    return ""
+  end
+  return "\t"
+end, { expr = true, silent = true, desc = "blink accept / cursortab accept / tab" })
+vim.keymap.set("n", "<leader>uN", "<cmd>CursortabToggle<cr>", { desc = "Toggle next-edit prediction (cursortab)" })
 
 -- conform.nvim (format-on-save) ----------------------------------------------
 require("conform").setup({
