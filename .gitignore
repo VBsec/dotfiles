@@ -158,6 +158,11 @@ claude/.claude/*
 !claude/.claude/agents/
 !claude/.claude/hooks/
 !claude/.claude/skills/
+# Skills dropped in by tooling rather than authored here — keep them out:
+#  - synced/: claude.ai skill-sync buckets (UUID-named dirs, regenerated per session)
+#  - use-railway/: installed and auto-updated by the Railway CLI agent tooling
+claude/.claude/skills/synced/
+claude/.claude/skills/use-railway/
 !claude/.claude/get-shit-done/
 # Plugins: keep only the declarative config, not installed/cached repos
 !claude/.claude/plugins/
