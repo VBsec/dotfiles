@@ -4,10 +4,11 @@
 -- so settings here override ML4W's defaults.
 -- -----------------------------------------------------
 
--- Keyboard layout
+-- Keyboard layout: Finnish without dead keys, so ^ ~ ´ ` ¨ type immediately
 hl.config({
     input = {
-        kb_layout = "fi",
+        kb_layout  = "fi",
+        kb_variant = "nodeadkeys",
     },
 })
 
