@@ -31,3 +31,12 @@ neovim
 mise
 tree-sitter-cli
 clang
+
+# Docker (then: sudo systemctl enable --now docker.socket; sudo usermod -aG docker $USER)
+docker
+docker-compose
+docker-buildx
+
+# AUR (not installable with pacman; the grep above skips these):
+#   yay -S 1password 1password-cli zen-browser-bin visual-studio-code-bin
+# VS Code: ~/.vscode/argv.json needs "password-store": "gnome-libsecret" (keyring outside GNOME)
