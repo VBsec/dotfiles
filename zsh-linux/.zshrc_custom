@@ -4,6 +4,10 @@
 # The macOS setup lives in zsh/.zshrc; port pieces over as they're needed.
 
 # Tools
+# Don't let mise's global python shadow the system one: Arch tools with
+# `#!/usr/bin/env python3` (powerprofilesctl etc.) need system packages like gi.
+# Projects get their python from uv or their own mise config.
+export MISE_DISABLE_TOOLS=python
 command -v mise >/dev/null && eval "$(mise activate zsh)"
 command -v zoxide >/dev/null && eval "$(zoxide init zsh)"
 

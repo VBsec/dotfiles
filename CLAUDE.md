@@ -74,7 +74,8 @@ This repo only adds to them, and grows as things are needed (not a full port of 
 - **`arch/packages.txt`** — pacman packages (Arch counterpart to `brew/Brewfile`).
   `sudo pacman -S --needed - < <(grep -v '^#' arch/packages.txt)`
 - **`arch/system/`** — root-owned system files, installed with `sudo install` (not stowed).
-  `getty-autologin.conf`: passwordless autologin on tty1.
+  `getty-autologin.conf`: passwordless autologin on tty1. `logind-lid.conf`: closing the
+  lid does nothing (dead battery, used docked).
 - **`zsh-linux/`** — `.zshrc_custom` → `~/.zshrc_custom`, sourced last by ML4W's `~/.zshrc`
   loader; `.zprofile` starts Hyprland on tty1. The macOS `zsh/` package is not stowed on Arch.
 - **`ml4w/`** — a stow dir (`-d ml4w`) whose packages fill the slots ML4W leaves for the user,
@@ -103,6 +104,7 @@ This repo only adds to them, and grows as things are needed (not a full port of 
      (asked once per boot, since autologin can't unlock it). If gh says "saved in plain
      text", create the keyring first (`secret-tool store --label=x k v`), then re-login gh.
    - `sudo install -Dm644 arch/system/getty-autologin.conf /etc/systemd/system/getty@tty1.service.d/autologin.conf`
+   - `sudo install -Dm644 arch/system/logind-lid.conf /etc/systemd/logind.conf.d/lid.conf`
    - git: `gh auth setup-git`, `user.name`/`user.email` (GitHub noreply), `init.defaultBranch main`
 6. `mise install` (tools from `config/mise/config.toml`), then open `nvim` once for plugins.
 
