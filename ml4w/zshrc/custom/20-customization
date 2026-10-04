@@ -1,0 +1,33 @@
+# -----------------------------------------------------
+# Override of ML4W's 20-customization without Oh My Zsh.
+# Plugins come from Arch packages instead:
+#   zsh-autosuggestions zsh-syntax-highlighting
+# Personal additions go in ~/.zshrc_custom (dotfiles repo).
+# -----------------------------------------------------
+
+# History
+HISTFILE=~/.zsh_history
+HISTSIZE=10000
+SAVEHIST=10000
+setopt appendhistory
+setopt HIST_IGNORE_DUPS
+setopt HIST_IGNORE_SPACE
+
+# Completion
+autoload -Uz compinit && compinit
+zstyle ':completion:*' menu select
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
+
+# fzf key bindings (Ctrl+R, Ctrl+T, Alt+C)
+source <(fzf --zsh)
+
+# Plugins
+[[ -f /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh ]] &&
+    source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+
+# Prompt (ML4W theme)
+eval "$(oh-my-posh init zsh --config $HOME/.config/ohmyposh/zen.toml)"
+
+# Syntax highlighting must be sourced last
+[[ -f /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]] &&
+    source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh

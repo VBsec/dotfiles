@@ -1,0 +1,41 @@
+-- -----------------------------------------------------
+-- Custom (personal additions, kept across ML4W updates)
+-- Loaded by ML4W's hyprland.lua after its conf/* files,
+-- so settings here override ML4W's defaults.
+-- -----------------------------------------------------
+
+-- Keyboard layout
+hl.config({
+    input = {
+        kb_layout = "fi",
+    },
+})
+
+-- NVIDIA GTX 1060 (same as ML4W's "nvidia" environment variant)
+hl.env("LIBVA_DRIVER_NAME", "nvidia")
+hl.env("__GLX_VENDOR_LIBRARY_NAME", "nvidia")
+
+-- MSI MAG251RX: its preferred mode is 60 Hz, so ask for 240 Hz explicitly
+hl.monitor({
+    output   = "DP-1",
+    mode     = "1920x1080@239.96",
+    position = "0x0",
+    scale    = 1,
+})
+
+-- 1Password: start hidden in the tray
+hl.on("hyprland.start", function ()
+    hl.exec_cmd("1password --silent")
+end)
+
+-- Logitech MX Anywhere 2 (Unifying receiver, 1000 DPI set in Solaar)
+hl.device({
+    name          = "logitech-mx-anywhere-2-1",
+    sensitivity   = -0.25,    -- -1.0 (slow) … 1.0 (fast); with flat accel ≈ 0.75x speed
+    accel_profile = "flat",   -- no acceleration
+    scroll_factor = 1.5,
+})
+
+-- 1Password (its in-app global shortcuts don't work under Wayland)
+hl.bind("CTRL + SHIFT + space",       hl.dsp.exec_cmd("1password --quick-access"), { description = "1Password Quick Access" })
+hl.bind("SUPER + SHIFT + P",          hl.dsp.exec_cmd("1password"),                { description = "Open 1Password" })

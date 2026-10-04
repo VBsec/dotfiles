@@ -4,7 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository Overview
 
-This is a personal dotfiles repository containing configuration files for various development tools on macOS. The configurations are organized by application and designed to be symlinked to their appropriate locations using GNU stow.
+This is a personal dotfiles repository containing configuration files for various development tools on macOS (primary workstation) and Arch Linux (Hyprland + ML4W dotfiles). The configurations are organized by application and designed to be symlinked to their appropriate locations using GNU stow.
+
+One `main` branch serves both OSes: shared configs (nvim, mise) are used as-is on both, and OS-specific pieces live in their own packages/dirs (see "Arch Linux" below).
 
 ## Architecture
 
@@ -61,6 +63,47 @@ stow -t ~/.config -n config     # dry run
 stow zsh                         # e.g. zsh, tmux, claude, pi
 stow -D zsh                      # remove
 ```
+
+### Arch Linux
+The Arch machine runs ML4W dotfiles, which own most of the desktop and the zsh loader.
+This repo only adds to them, and grows as things are needed (not a full port of macOS):
+
+- **`arch/stow.sh`** — stows everything used on Arch: `config` (with macOS-only and not-yet-used
+  apps skipped via `--ignore`; currently just nvim + mise get linked), `zsh-linux`, and the
+  `ml4w/` packages. Pass stow flags through: `arch/stow.sh -n -v` (dry run), `arch/stow.sh -D`.
+- **`arch/packages.txt`** — pacman packages (Arch counterpart to `brew/Brewfile`).
+  `sudo pacman -S --needed - < <(grep -v '^#' arch/packages.txt)`
+- **`arch/system/`** — root-owned system files, installed with `sudo install` (not stowed).
+  `getty-autologin.conf`: passwordless autologin on tty1.
+- **`zsh-linux/`** — `.zshrc_custom` → `~/.zshrc_custom`, sourced last by ML4W's `~/.zshrc`
+  loader; `.zprofile` starts Hyprland on tty1. The macOS `zsh/` package is not stowed on Arch.
+- **`ml4w/`** — a stow dir (`-d ml4w`) whose packages fill the slots ML4W leaves for the user,
+  so ML4W's own files stay stock and updates never conflict:
+  - `hypr/custom.lua` → `~/.config/hypr/custom.lua`: keyboard layout, NVIDIA env, monitor
+    rules, mouse settings, 1Password autostart + keybinds.
+  - `zshrc/custom/20-customization` → replaces ML4W's Oh My Zsh module (Arch-packaged
+    plugins instead; ML4W's oh-my-posh prompt kept).
+  - `ml4w-settings/hide-fastfetch` → disables fastfetch on terminal start.
+  ML4W's dirs are symlinks into `~/.mydotfiles/`, so stow.sh targets their `realpath`
+  with `--no-folding`; stowing through the symlink would create broken relative links.
+
+#### Fresh install / restore order
+1. Arch base install (GPU: `nvidia-580xx-dkms` + `nvidia-580xx-utils` from AUR, Pascal),
+   `yay`, then `nvidia_drm.modeset=1` on the kernel cmdline.
+2. ML4W: `bash <(curl -s https://ml4w.com/os/stable)`
+3. `sudo pacman -S github-cli && gh auth login --git-protocol https --web`, then
+   `gh repo clone vbsec/dotfiles ~/Projects/dotfiles`
+4. `sudo pacman -S --needed - < <(grep -v '^#' arch/packages.txt)`, then `arch/stow.sh`
+5. System setup:
+   - `chsh -s /usr/bin/zsh`
+   - locale: uncomment `en_US.UTF-8 UTF-8` in `/etc/locale.gen`, `sudo locale-gen`
+   - `sudo systemctl enable --now bluetooth`
+   - `sudo install -Dm644 arch/system/getty-autologin.conf /etc/systemd/system/getty@tty1.service.d/autologin.conf`
+   - git: `gh auth setup-git`, `user.name`/`user.email` (GitHub noreply), `init.defaultBranch main`
+6. `mise install` (tools from `config/mise/config.toml`), then open `nvim` once for plugins.
+
+Not in the repo: 1Password (`yay -S 1password 1password-cli`), Logitech devices (paired to
+the Unifying receiver itself, so pairing survives reinstalls).
 
 ### Cursor Extensions
 ```bash

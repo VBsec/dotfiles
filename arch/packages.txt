@@ -1,0 +1,29 @@
+# Arch packages (pacman). The macOS equivalent is brew/Brewfile.
+# Grows as needed, not a 1:1 port of the Brewfile.
+# Install: sudo pacman -S --needed - < <(grep -v '^#' arch/packages.txt)
+
+# Dotfiles + shell
+stow
+zsh-autosuggestions
+zsh-syntax-highlighting
+zoxide
+
+# CLI tools
+git
+github-cli
+fzf
+fd
+ripgrep
+bat
+eza
+lazygit
+
+# Hardware
+bluez-utils
+solaar
+
+# Neovim + toolchain (LSPs/formatters come from mise: config/mise/config.toml)
+neovim
+mise
+tree-sitter-cli
+clang

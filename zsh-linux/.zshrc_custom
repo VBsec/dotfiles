@@ -1,0 +1,34 @@
+#!/usr/bin/env zsh
+# Linux (Arch + ML4W) additions. Sourced last by ML4W's ~/.zshrc loader,
+# so anything here overrides ML4W's ~/.config/zshrc/* defaults.
+# The macOS setup lives in zsh/.zshrc; port pieces over as they're needed.
+
+# Tools
+command -v mise >/dev/null && eval "$(mise activate zsh)"
+command -v zoxide >/dev/null && eval "$(zoxide init zsh)"
+
+# Aliases (from the macOS zshrc; ML4W's `c` = clear is overridden)
+alias c=claude
+alias lg=lazygit
+alias printpath="echo \$PATH | tr ':' '\n'"
+
+mkcd() { mkdir -p "$1" && cd "$1"; }
+
+glog() {
+  git log --graph --pretty=format:'%C(auto)%h%d %s %C(black)%C(bold)%cr %C(auto)%an' "$@"
+}
+
+# Done with a branch whose PR was merged elsewhere: switch to the default
+# branch, pull, then delete the old local branch. Usage: gdone [branch]
+gdone() {
+  local def branch
+  def=$(git symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null)
+  def=${def#origin/}
+  def=${def:-main}
+  branch=${1:-$(git rev-parse --abbrev-ref HEAD)}
+  if [[ "$branch" == "$def" ]]; then
+    echo "gdone: already on '$def'; nothing to delete" >&2
+    return 1
+  fi
+  git switch "$def" && git pull --prune && git branch -D "$branch"
+}
