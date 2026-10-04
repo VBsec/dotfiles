@@ -18,6 +18,10 @@ bat
 eza
 lazygit
 
+# Secrets (gh, browsers etc. store tokens here; unlock prompt once per boot)
+gnome-keyring
+seahorse
+
 # Hardware
 bluez-utils
 solaar

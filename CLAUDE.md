@@ -98,6 +98,10 @@ This repo only adds to them, and grows as things are needed (not a full port of 
    - `chsh -s /usr/bin/zsh`
    - locale: uncomment `en_US.UTF-8 UTF-8` in `/etc/locale.gen`, `sudo locale-gen`
    - `sudo systemctl enable --now bluetooth`
+   - keyring: `systemctl --user enable --now gnome-keyring-daemon.socket`; the first secret
+     stored (e.g. `gh auth login`) prompts to create the default keyring and its password
+     (asked once per boot, since autologin can't unlock it). If gh says "saved in plain
+     text", create the keyring first (`secret-tool store --label=x k v`), then re-login gh.
    - `sudo install -Dm644 arch/system/getty-autologin.conf /etc/systemd/system/getty@tty1.service.d/autologin.conf`
    - git: `gh auth setup-git`, `user.name`/`user.email` (GitHub noreply), `init.defaultBranch main`
 6. `mise install` (tools from `config/mise/config.toml`), then open `nvim` once for plugins.
