@@ -129,7 +129,8 @@ dev-file-widget() {
   fi
 }
 zle -N dev-file-widget
-bindkey '\ev' dev-file-widget  # Alt+V
+bindkey '\ev' dev-file-widget  # Alt+V (terminals with option-as-alt)
+bindkey '√' dev-file-widget    # Option+V in Ghostty (macos-option-as-alt = false)
 
 
 # Ctrl+P to jump to dotfiles (optional, remove if you want default behavior)
@@ -156,6 +157,22 @@ md-glow-widget() {
 }
 zle -N md-glow-widget
 bindkey '^G' md-glow-widget
+
+# Alt+G to fzf markdown files and serve with gh markdown-preview on :2999
+md-preview-widget() {
+  local file
+  file=$(fd --type f --extension md --hidden --no-ignore --exclude node_modules --exclude .git 2>/dev/null | \
+    fzf --preview 'bat --style=numbers --color=always --line-range :200 {}')
+  if [[ -n $file ]]; then
+    BUFFER="gh markdown-preview -p 2999 ${(q)file}"
+    zle accept-line
+  else
+    zle reset-prompt
+  fi
+}
+zle -N md-preview-widget
+bindkey '\eg' md-preview-widget  # Alt+G (terminals with option-as-alt)
+bindkey '©' md-preview-widget    # Option+G in Ghostty (macos-option-as-alt = false)
 
 # Ctrl+E for fzf directory navigation (replacement for Alt+C which conflicts with ghostty)
 fzf-cd-widget-custom() {
