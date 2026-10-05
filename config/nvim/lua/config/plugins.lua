@@ -497,8 +497,8 @@ require("blink.cmp").setup({
 })
 
 -- cursortab.nvim (next-edit prediction) ---------------------------------------
--- Talks to the Go daemon, which talks to llama-server (sweep-next-edit-1.5B)
--- on 127.0.0.1:8000 (launchd agent com.local.llama-server). <Tab> handling:
+-- Talks to the Go daemon, which talks to a local llama-server (see the provider
+-- table below; ~/nextedit-setup/NOTES.md for the server side). <Tab> handling:
 -- blink.cmp's <Tab> is buffer-local (set on InsertEnter) and wins while its
 -- menu is open; with the menu closed its `fallback` runs the global insert
 -- <Tab>, which is the wrapper defined right after this setup() (it replaces
@@ -508,12 +508,23 @@ require("cursortab").setup({
   -- CURSORTAB_LOG_LEVEL=debug nvim … logs full prompts/responses to
   -- ~/.local/state/nvim/cursortab/cursortab.log (used by the e2e test).
   log_level = vim.env.CURSORTAB_LOG_LEVEL or "info",
+  -- The daemon (socket/pid/log) lives in state_dir and is shared by every
+  -- Neovim using the same dir. The e2e runner sets CURSORTAB_STATE_DIR so its
+  -- daemon restarts never disconnect an interactive session.
+  state_dir = vim.env.CURSORTAB_STATE_DIR or (vim.fn.stdpath("state") .. "/cursortab"),
   provider = {
-    type = "sweep",
-    url = "http://127.0.0.1:8000",
+    -- Default: sweep-next-edit-1.5B on 127.0.0.1:8000 (launchd
+    -- com.local.llama-server): ~0.5 s, weak. Zed's zeta-2.1 (SeedCoder-8B) on
+    -- 127.0.0.1:8001 (com.local.llama-server-zeta) is much better but 2–4 s;
+    -- switch at runtime with :NextEditModel zeta|sweep (below), or start with
+    -- CURSORTAB_PROVIDER=zeta-2.1 CURSORTAB_URL=http://127.0.0.1:8001 nvim.
+    -- The daemon is shared across Neovim instances and restarts on a config
+    -- change, so mixing providers in two instances at once flaps.
+    type = vim.env.CURSORTAB_PROVIDER or "sweep",
+    url = vim.env.CURSORTAB_URL or "http://127.0.0.1:8000",
     max_tokens = 512,          -- also = input window size (tokens) when context_size = 0
     context_size = 0,
-    completion_timeout = 5000,
+    completion_timeout = 8000,  -- zeta-2.1 cold requests can take ~4 s; harmless for sweep
   },
   keymaps = {
     accept = "<Tab>",          -- rebound below to cooperate with blink.cmp
@@ -546,6 +557,31 @@ vim.keymap.set("i", "<Tab>", function()
   return "\t"
 end, { expr = true, silent = true, desc = "blink accept / cursortab accept / tab" })
 vim.keymap.set("n", "<leader>uN", "<cmd>CursortabToggle<cr>", { desc = "Toggle next-edit prediction (cursortab)" })
+
+-- :NextEditModel sweep|zeta — swap the prediction model at runtime. setup()
+-- with a changed provider restarts the daemon, so it takes effect immediately.
+-- zeta gets longer trigger delays: each request it has to cancel costs ~1 s.
+local nextedit_models = {
+  sweep = { type = "sweep", url = "http://127.0.0.1:8000", idle = 150, debounce = 150 },
+  zeta = { type = "zeta-2.1", url = "http://127.0.0.1:8001", idle = 300, debounce = 300 },
+}
+vim.api.nvim_create_user_command("NextEditModel", function(opts)
+  local m = nextedit_models[opts.args]
+  if not m then
+    vim.notify("NextEditModel: use 'sweep' or 'zeta'", vim.log.levels.ERROR)
+    return
+  end
+  local cfg = require("cursortab.config").get()
+  require("cursortab").setup(vim.tbl_deep_extend("force", cfg, {
+    provider = { type = m.type, url = m.url },
+    behavior = { idle_completion_delay = m.idle, text_change_debounce = m.debounce },
+  }))
+  vim.notify("Next-edit model: " .. opts.args .. " (" .. m.url .. ")", vim.log.levels.INFO)
+end, {
+  nargs = 1,
+  complete = function() return { "sweep", "zeta" } end,
+  desc = "Switch next-edit prediction model (sweep = fast, zeta = better)",
+})
 
 -- conform.nvim (format-on-save) ----------------------------------------------
 require("conform").setup({

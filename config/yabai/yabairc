@@ -30,9 +30,6 @@ yabai -m config focus_follows_mouse off
 # set modifier + right-click drag to resize window
 # yabai -m config mouse_action2 resize
 
-# when window is dropped in center of another window, swap them (on edges it will split it)
-yabai -m mouse_drop_action swap
-
 # modify window shadows (default: on, options: on, off, float)
 # example: show shadows only for floating windows
 # yabai -m config window_shadow float

@@ -31,7 +31,6 @@
       "Bash(git stash list:*)",
       "Bash(git stash show:*)",
       "Bash(git worktree list:*)",
-      "Bash(git -C *:*)",
       "Bash(gh pr list:*)",
       "Bash(gh pr view:*)",
       "Bash(gh issue list:*)",
@@ -151,11 +150,9 @@
     ],
     "deny": [
       "Read(.env.infisica*)",
-      "Read(.env)",
-      "Write(.claude/settings.json)",
-      "Write(.claude/settings.local.json)"
+      "Read(.env)"
     ],
-    "defaultMode": "default",
+    "defaultMode": "auto",
     "additionalDirectories": [
       "/tmp"
     ]
@@ -169,6 +166,18 @@
             "type": "command",
             "command": "python3 ~/.claude/hooks/block-op-no-masking.py",
             "timeout": 5
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "^(startup|resume|clear|compact|fork)$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash '/Users/vbsec/.claude/hooks/herdr-agent-state.sh' session",
+            "timeout": 10
           }
         ]
       }
@@ -203,7 +212,10 @@
     "marp@marp-mcp": true,
     "linear@claude-plugins-official": true,
     "pyright-lsp@claude-plugins-official": true,
-    "lua-lsp@claude-plugins-official": true
+    "lua-lsp@claude-plugins-official": true,
+    "coderabbit@claude-plugins-official": true,
+    "pr-review-toolkit@claude-plugins-official": true,
+    "journal@claude-journal": true
   },
   "extraKnownMarketplaces": {
     "obsidian-skills": {
@@ -217,6 +229,12 @@
         "source": "github",
         "repo": "masaki39/marp-mcp"
       }
+    },
+    "claude-journal": {
+      "source": {
+        "source": "github",
+        "repo": "jl-cmd/claude-journal"
+      }
     }
   },
   "spinnerTipsEnabled": false,
@@ -229,6 +247,7 @@
   "skipDangerousModePermissionPrompt": true,
   "editorMode": "vim",
   "preferredNotifChannel": "ghostty",
+  "agentPushNotifEnabled": true,
   "skipAutoPermissionPrompt": true,
   "voiceEnabled": true
 }
