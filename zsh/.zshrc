@@ -256,9 +256,29 @@ ld() {
 }
 
 # Additional useful eza shortcuts
-la() {
-  # List all with details
-  eza -la --icons --git --group-directories-first "$@"
+lx() {
+  # List files by extension
+  # Usage: lx <ext> [depth] [dir]   e.g. lx md, lx .lua 3 config/nvim
+  # depth defaults to 1 (current dir only)
+  local ext=${1#.} depth=1
+  shift
+  if [[ $1 =~ ^[0-9]+$ ]]; then
+    depth=$1
+    shift
+  fi
+  local dir=${1:-.}
+  (
+    cd "$dir" || return 1
+    local f files=()
+    for f in **/*."$ext"(N.); do
+      (( ${#f//[^\/]} < depth )) && files+=("$f")  # slash count = depth - 1
+    done
+    if (( ! $#files )); then
+      echo "no .$ext files in $dir (depth $depth)" >&2
+      return 1
+    fi
+    eza -l --icons --git -- "${files[@]}"
+  )
 }
 
 ll() {
