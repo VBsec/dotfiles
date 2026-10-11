@@ -16,7 +16,6 @@
       "Bash(awk:*)",
       "Bash(wc:*)",
       "Bash(du:*)",
-      "Bash(env)",
       "Bash(xargs cat:*)",
       "Bash(xargs ls:*)",
       "Bash(git add:*)",
@@ -39,7 +38,6 @@
       "Bash(pnpm list:*)",
       "Bash(pnpm why:*)",
       "Bash(pnpm outdated:*)",
-      "Bash(pnpm run:*)",
       "Bash(pnpm test:*)",
       "Bash(pnpm build:*)",
       "Bash(pnpm lint:*)",
@@ -48,7 +46,6 @@
       "Bash(npm list:*)",
       "Bash(npm why:*)",
       "Bash(npm outdated:*)",
-      "Bash(npm run:*)",
       "Bash(npm test:*)",
       "Bash(npm run build:*)",
       "Bash(turbo run:*)",
@@ -66,10 +63,6 @@
       "Bash(cargo check:*)",
       "Bash(cargo clippy:*)",
       "Bash(cargo tree:*)",
-      "Bash(python -m pytest:*)",
-      "Bash(python -m unittest:*)",
-      "Bash(python -m mypy:*)",
-      "Bash(python -m ruff:*)",
       "Bash(make:*)",
       "Bash(make -j*)",
       "Bash(python3 build-all.py*)",
@@ -120,7 +113,6 @@
       "WebFetch(domain:hub.docker.com)",
       "WebFetch(domain:docs.dolthub.com)",
       "Bash(pnpm fmt:md:*)",
-      "Skill(beads:beads)",
       "Skill(commit-commands:commit)",
       "Bash(tail:*)",
       "Bash(true:*)",
@@ -147,14 +139,9 @@
       "mcp__plugin_Notion_notion__notion-*",
       "WebFetch(domain:blog.cloudflare.com)"
     ],
-    "deny": [
-      "Read(.env.infisica*)",
-      "Read(.env)"
-    ],
+    "deny": ["Read(.env.infisica*)", "Read(.env)"],
     "defaultMode": "auto",
-    "additionalDirectories": [
-      "/tmp"
-    ]
+    "additionalDirectories": ["/tmp"]
   },
   "hooks": {
     "PreToolUse": [
@@ -216,7 +203,8 @@
     "journal@claude-journal": true,
     "runway-api@claude-plugins-official": true,
     "design@synced": false,
-    "brightdata-plugin@synced": false
+    "brightdata-plugin@synced": false,
+    "rust-analyzer-lsp@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "obsidian-skills": {
@@ -244,11 +232,16 @@
   "awaySummaryEnabled": false,
   "autoUpdatesChannel": "latest",
   "tui": "default",
+  "voice": {
+    "enabled": true,
+    "mode": "tap"
+  },
   "prefersReducedMotion": true,
   "skipDangerousModePermissionPrompt": true,
   "editorMode": "vim",
   "preferredNotifChannel": "ghostty",
   "agentPushNotifEnabled": true,
   "skipAutoPermissionPrompt": true,
-  "voiceEnabled": true
+  "voiceEnabled": true,
+  "switchModelsOnFlag": false
 }
