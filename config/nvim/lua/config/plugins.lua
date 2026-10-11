@@ -542,6 +542,34 @@ require("cursortab").setup({
   },
 })
 
+-- Skip Claude Code's Ctrl+G prompt buffer ($TMPDIR/claude-prompt-<id>.md; no
+-- CLAUDECODE env reaches the editor). Appended to the defaults rather than
+-- passed to setup() so the default ignore list stays intact; ignore_paths is
+-- Lua-side only, so the shared daemon doesn't restart.
+table.insert(require("cursortab.config").get().behavior.ignore_paths, "claude-prompt-*.md")
+
+-- No predictions while the cmdline (noice popup) is open: the daemon's idle
+-- timer can still answer for the buffer underneath. Clear what's showing on
+-- CmdlineEnter, and reject anything that arrives while in cmdline mode.
+local function in_cmdline()
+  return vim.api.nvim_get_mode().mode:sub(1, 1) == "c"
+end
+local function cursortab_reject()
+  require("cursortab.ui").ensure_close_all()
+  require("cursortab.daemon").send_reject()
+end
+vim.api.nvim_create_autocmd("CmdlineEnter", { callback = cursortab_reject })
+for _, fn in ipairs({ "on_completion_ready", "on_cursor_prediction_ready" }) do
+  local orig = require("cursortab")[fn]
+  require("cursortab")[fn] = function(...)
+    if in_cmdline() then
+      require("cursortab.events").clear_awaiting_completion()
+      return require("cursortab.daemon").send_reject()
+    end
+    return orig(...)
+  end
+end
+
 -- <Tab> arbitration: completion menu open → blink accepts; else prediction
 -- showing → cursortab accepts/jumps; else literal <Tab>. Insert mode only;
 -- normal-mode <Tab> is left as cursortab installed it (jump/accept or tab).
