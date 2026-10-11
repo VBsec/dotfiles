@@ -161,8 +161,15 @@ claude/.claude/*
 # Skills dropped in by tooling rather than authored here — keep them out:
 #  - synced/: claude.ai skill-sync buckets (UUID-named dirs, regenerated per session)
 #  - use-railway/: installed and auto-updated by the Railway CLI agent tooling
+#  - bom, datasheets, emc, kicad, spice: absolute symlinks into a local
+#    ~/Development/tools/kicad-happy clone (machine-local)
 claude/.claude/skills/synced/
 claude/.claude/skills/use-railway/
+claude/.claude/skills/bom
+claude/.claude/skills/datasheets
+claude/.claude/skills/emc
+claude/.claude/skills/kicad
+claude/.claude/skills/spice
 !claude/.claude/get-shit-done/
 # Plugins: keep only the declarative config, not installed/cached repos
 !claude/.claude/plugins/
