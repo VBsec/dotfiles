@@ -713,9 +713,8 @@ fi
 # ============================================================================
 # ENVIRONMENT VARIABLES
 # ============================================================================
-export GRANTED_ENABLE_AUTO_REASSUME=true
 export TIMEFMT=$'real\t%E\nuser\t%U\nsys\t%S'
-export JAVA_HOME=/Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home
+export JAVA_HOME="$HOME/Applications/Android Studio.app/Contents/jbr/Contents/Home"  # Android Studio bundled JDK
 export STM32_PRG_PATH=/Applications/STMicroelectronics/STM32Cube/STM32CubeProgrammer/STM32CubeProgrammer.app/Contents/MacOs/bin
 export STM32CubeMX_PATH=/Applications/STMicroelectronics/STM32CubeMX.app/Contents/Resources
 export PKG_CONFIG_PATH="/opt/homebrew/opt/ruby/lib/pkgconfig"
