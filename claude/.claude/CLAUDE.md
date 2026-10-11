@@ -16,3 +16,12 @@
   splitting is actually wanted.
 - When a script genuinely needs bash semantics, invoke it explicitly: `bash -c '...'` or
   `/bin/bash script.sh`. Don't assume and don't re-derive this each session.
+
+## PR review (innotrafik repo only)
+
+- **Review with `/review-bench`, not the CodeRabbit CLI step.** In `/work`, skip phase 5's
+  CodeRabbit review (treat it as `--no-review`, so the PR body gets `@coderabbitai ignore`). After
+  the PR is opened, run the `review-bench` skill. It reviews with Claude's `/code-review` and the
+  CodeRabbit CLI in parallel, scores both, and fixes the valid findings. Scores stay in
+  `~/.claude/review-bench/`, never in the repo. This is personal; never suggest it to Miro or add
+  it to repo files.
