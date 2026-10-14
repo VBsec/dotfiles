@@ -41,6 +41,15 @@ yabai -m config window_opacity off
 # yabai -m config normal_window_opacity 0.7
 # yabai -m signal --add label="flash_focus" event="window_focused" action="yabai -m window \$YABAI_WINDOW_ID --opacity 0.1 && sleep $(yabai -m config window_opacity_duration) && yabai -m window \$YABAI_WINDOW_ID --opacity 0.0"
 
+# open Chrome on the MacBook's built-in display. yabai resolves display=<label>
+# to an index when the rule is added, and the index changes with the monitor
+# arrangement, so relabel by UUID and re-add the rule whenever displays change.
+BUILTIN_UUID="37D8832A-2D66-02CA-B9F7-8F30A301B230"
+chrome_builtin="yabai -m display \$(yabai -m query --displays | jq '.[] | select(.uuid==\"$BUILTIN_UUID\") | .index') --label builtin; yabai -m rule --remove chrome-builtin 2>/dev/null; yabai -m rule --add label=chrome-builtin app='^Google Chrome\$' display=builtin"
+eval "$chrome_builtin"
+yabai -m signal --add event=display_added action="$chrome_builtin"
+yabai -m signal --add event=display_removed action="$chrome_builtin"
+
 # disable specific apps
 yabai -m rule --add app="^System Settings$" manage=off
 yabai -m rule --add app="^Calculator$" manage=off

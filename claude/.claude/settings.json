@@ -139,9 +139,16 @@
       "mcp__plugin_Notion_notion__notion-*",
       "WebFetch(domain:blog.cloudflare.com)"
     ],
-    "deny": ["Read(.env.infisica*)", "Read(.env)"],
+    "deny": [
+      "Read(.env.infisica*)",
+      "Read(.env)",
+      "Bash(/opt/homebrew/bin/dfu-util:*)",
+      "Bash(/opt/homebrew/Cellar/dfu-util/*)"
+    ],
     "defaultMode": "auto",
-    "additionalDirectories": ["/tmp"]
+    "additionalDirectories": [
+      "/tmp"
+    ]
   },
   "hooks": {
     "PreToolUse": [
@@ -240,8 +247,8 @@
   "skipDangerousModePermissionPrompt": true,
   "editorMode": "vim",
   "preferredNotifChannel": "ghostty",
+  "switchModelsOnFlag": false,
   "agentPushNotifEnabled": true,
   "skipAutoPermissionPrompt": true,
-  "voiceEnabled": true,
-  "switchModelsOnFlag": false
+  "voiceEnabled": true
 }
